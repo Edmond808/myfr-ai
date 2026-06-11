@@ -1,14 +1,15 @@
 ---
-description: Rivly project conventions for Cursor agents
-globs: src/**/*,server/**/*
+description: Rivly / myfr.ai project conventions
+globs: app/**/*,components/**/*,lib/**/*
 alwaysApply: false
 ---
 
 # Rivly conventions
 
-- French Riviera services marketplace prototype
-- Brand colors: navy `#10324A`, azure `#2B86BC`, amber `#E2992F`
-- Typography: Fraunces (headings), Inter (body)
-- All Anthropic API calls must stay in `server/classify.ts` — never in browser code
-- Check `docs/REVIEW_QUEUE.md` before starting; update it when done
-- Claude team reviews from `/Users/e808m/rivly-claude` — keep branches mergeable
+- Next.js App Router — no Vite, no client-side API keys
+- Classification prompt in `lib/classify.ts` is core IP — do not change without review
+- 8 categories must stay in sync: `lib/types.ts`, `schema.sql` enum, classifier prompt
+- Anonymous classify OK; auth required at dispatch (see MIGRATION_PLAN.md Phase 2)
+- i18n: add strings to both `lib/i18n/messages/en.ts` and `fr.ts`
+- Merchant verification stays manual for first 50 pros
+- Claude team workspace: `/Users/e808m/rivly-claude`

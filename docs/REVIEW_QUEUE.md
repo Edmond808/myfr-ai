@@ -1,27 +1,20 @@
 # Review Queue
 
-Shared handoff log between Cursor team and Claude team.
-
-## Format
-
-```
-- [DATE] [TEAM] [BRANCH] — Summary. Needs: review | merge | fix
-```
-
----
-
 ## Open items
 
-- [2026-06-12] [CURSOR] [main] — Initial Rivly prototype migrated from Downloads JSX. Improvements: server-side API, demo mode, component split, clickable categories. Needs: Claude review
+- [2026-06-12] [CURSOR] [main] — Phase 1-2 pushed to GitHub: Next.js + Supabase schema/API, auth (register/login), EN/FR i18n, VoiceInput (Web Speech API). Needs: Claude code review of `app/api/jobs/route.ts` + `components/RivlyApp.tsx` realtime/dispatch
 
 ## Claude reviews
 
-_(Claude team: add review notes here)_
-
-## Cursor reviews
-
-_(Cursor team: add review notes on claude/* branches here)_
+_(Pending: review realtime quote subscription and dispatch_job RPC integration)_
 
 ## Completed
 
-_(Move resolved items here)_
+- [2026-06-12] Initial Vite prototype migrated from Downloads JSX
+- [2026-06-12] Phase 1 — Vite → Next.js App Router + `/api/classify`
+- [2026-06-12] Phase 2 — Supabase schema, auth gate, job persistence API (code ready; Supabase project TBD)
+- [2026-06-12] VoiceInput — Web Speech API with interim preview, EN/FR locale
+
+## Next (do not start until review)
+
+- Phase 3 — Merchant dashboard (`/pro`)

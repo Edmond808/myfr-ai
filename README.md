@@ -1,40 +1,69 @@
-# Rivly
+# Rivly / myfr.ai
 
-AI-powered services marketplace prototype for the French Riviera.
+AI-powered services marketplace for the French Riviera.
 
-Describe what you need in plain language → AI classifies and dispatches to verified local pros → compare quotes → accept and pay via escrow.
+## Stack
+
+- **Next.js 15** App Router (deployable API routes)
+- **Supabase** Auth + Postgres + Realtime
+- **Tailwind CSS v4**
+- **Anthropic** server-side classification (`/api/classify`)
 
 ## Quick start
 
 ```bash
 npm install
-npm run dev
+cp .env.example .env   # add keys when ready
+npm run dev            # http://localhost:3000
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Works in **demo mode** without Supabase or Anthropic keys — uses keyword classification and simulated quotes.
 
-Optional: copy `.env.example` to `.env` and set `ANTHROPIC_API_KEY` for live AI dispatch. Without it, demo mode uses keyword-based classification.
+## Supabase setup (Phase 2)
 
-## Dual-team setup
+1. Create project in **EU region** (Frankfurt or Paris)
+2. Run `schema.sql` in SQL Editor
+3. Enable Auth: email + password (Google optional)
+4. Enable Realtime on `quotes` table
+5. Add env vars to `.env`
+
+## Auth flow
+
+- Users can **type and classify anonymously**
+- **Registration required** at dispatch (when sending to real pros)
+- `/auth/register` — full name, email, password, language (EN/FR), default city
+- `/auth/login` — returns to pending dispatch via `?resume=dispatch`
+
+## i18n
+
+EN + FR via header language switcher. Preference saved to `profiles.preferred_language` on registration.
+
+## Dual-team workflow
 
 | Workspace | Tool |
 |-----------|------|
-| `/Users/e808m/myfr.ai` | Cursor (build) |
-| `/Users/e808m/rivly-claude` | Claude Code (review) |
+| `/Users/e808m/myfr.ai` | Cursor |
+| `/Users/e808m/rivly-claude` | Claude Code |
 
-See [docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md) and [AGENTS.md](AGENTS.md).
+See [MIGRATION_PLAN.md](MIGRATION_PLAN.md), [AGENTS.md](AGENTS.md), [docs/REVIEW_QUEUE.md](docs/REVIEW_QUEUE.md).
 
-## Prototype flow
+## Project structure
 
-1. **Home** — describe a need, pick a Riviera city, or click a category chip
-2. **Dispatch** — AI parses the request, shows job summary + market estimate
-3. **Quotes** — simulated merchant quotes arrive over ~5 seconds
-4. **Accept** — escrow breakdown with 15% Rivly commission
+```
+app/
+  api/classify/     # AI dispatch (core IP — do not change prompt)
+  api/jobs/         # Persist job + dispatch_job RPC + fetch quotes
+  api/profile/      # User profile CRUD
+  auth/             # Login, register, OAuth callback
+components/         # RivlyApp, HomeView, DispatchView, auth forms
+lib/                # classify, constants, i18n, supabase clients
+schema.sql          # Full Supabase schema + RLS + dispatch_job()
+```
 
-## Improvements over original JSX
+## Phases completed
 
-- Server-side Anthropic API (no exposed keys in browser)
-- Demo mode fallback when no API key
-- TypeScript + component split
-- Clickable category chips with example pre-fill
-- ⌘+Enter to submit
+- [x] Phase 1 — Next.js migration
+- [x] Phase 2 — Supabase schema + auth + job persistence (code ready; needs Supabase project)
+- [ ] Phase 3 — Merchant dashboard (`/pro`)
+- [ ] Phase 4 — Stripe Connect
+- [ ] Phase 5 — SEO landing pages

@@ -1,0 +1,109 @@
+export const messages = {
+  brand: "Rivly",
+  tagline: "French Riviera · prototype",
+  home: {
+    title1: "What do you need",
+    title2: "on the Côte d'Azur?",
+    subtitle:
+      "Describe it in your own words. Our AI sends it to verified local professionals — you only pay when the job is done.",
+    sendRequest: "Send request",
+    dispatching: "Dispatching…",
+    howItWorks:
+      "How it works: you describe → AI matches verified pros → you compare quotes → pay securely, money released on completion.",
+    tip: "Tip: tap the mic to speak, click a category for an example, or press ⌘+Enter to send.",
+    dispatchError: "The dispatch engine didn't respond. Try again in a moment.",
+    authRequired: "Sign in to send your request to verified pros.",
+  },
+  auth: {
+    login: "Sign in",
+    register: "Create account",
+    logout: "Sign out",
+    email: "Email",
+    password: "Password",
+    fullName: "Full name",
+    confirmPassword: "Confirm password",
+    noAccount: "No account yet?",
+    hasAccount: "Already have an account?",
+    registerTitle: "Join Rivly",
+    registerSubtitle: "Create an account to dispatch requests to verified Riviera pros.",
+    loginTitle: "Welcome back",
+    loginSubtitle: "Sign in to send requests and track your jobs.",
+    registerSuccess: "Check your email to confirm your account, then sign in.",
+    loginError: "Invalid email or password.",
+    registerError: "Could not create account. Try a different email.",
+    passwordMismatch: "Passwords do not match.",
+    continueToDispatch: "Continue to dispatch",
+    language: "Preferred language",
+    defaultLocation: "Default city",
+  },
+  dispatch: {
+    newRequest: "New request",
+    aiEstimate: "AI market estimate",
+    demoMode: "Demo mode — set ANTHROPIC_API_KEY for live AI dispatch",
+    clarifyingPrefix: "To quote precisely, pros will ask:",
+    sentTo: "Sent to",
+    verifiedPros: "verified pros",
+    quotesIn: "quotes in",
+    quoting: "Quoting…",
+    acceptQuote: "Accept quote",
+    quoteAccepted: "Quote accepted — payment held in escrow",
+    confirmedFor: "is confirmed for",
+    escrowNote:
+      "Funds are released automatically when you mark the job complete.",
+    customerPays: "Customer pays",
+    commission: "commission",
+    merchantReceives: "Merchant receives",
+    submitAnother: "Submit another request",
+    jobs: "jobs",
+    noMerchantsYet:
+      "No verified merchants in this area yet — we're onboarding pros manually.",
+    waitingAuth: "Sign in to dispatch to verified pros",
+  },
+  urgency: {
+    today: "Needed today",
+    this_week: "This week",
+    flexible: "Flexible timing",
+  },
+  categories: {
+    groceries: "Groceries & errands",
+    housekeeping: "Housekeeping & cleaning",
+    rentals: "Rentals & accommodation",
+    transport: "Transport & transfers",
+    boats: "Boats & charters",
+    handyman: "Handyman & works",
+    events: "Events & private chefs",
+    concierge: "Concierge & other",
+  },
+  examples: [
+    "I need someone to do my groceries tomorrow morning in Cannes…",
+    "Looking for a weekly housekeeper for a 2-bedroom near the Croisette…",
+    "Need a boat with skipper for 6 people this Saturday…",
+    "Airport transfer Nice → Monaco, Friday 14:00, 3 suitcases…",
+    "Searching for a 1-month apartment rental in Antibes, July…",
+    "Private chef for a dinner of 8 on Thursday evening…",
+  ],
+  categoryExamples: {
+    groceries: "I need someone to do my groceries tomorrow morning in Cannes…",
+    housekeeping:
+      "Looking for a weekly housekeeper for a 2-bedroom near the Croisette…",
+    boats: "Need a boat with skipper for 6 people this Saturday…",
+    transport: "Airport transfer Nice → Monaco, Friday 14:00, 3 suitcases…",
+    rentals: "Searching for a 1-month apartment rental in Antibes, July…",
+    events: "Private chef for a dinner of 8 on Thursday evening…",
+    handyman: "Need a handyman to fix a leaking tap in my villa in Antibes…",
+    concierge:
+      "Need help arranging restaurant reservations and spa bookings in Monaco…",
+  },
+} as const;
+
+export type Messages = {
+  brand: string;
+  tagline: string;
+  home: Record<string, string>;
+  auth: Record<string, string>;
+  dispatch: Record<string, string>;
+  urgency: Record<string, string>;
+  categories: Record<string, string>;
+  examples: readonly string[];
+  categoryExamples: Record<string, string>;
+};
