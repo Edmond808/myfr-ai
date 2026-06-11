@@ -1,0 +1,14 @@
+---
+description: Rivly project conventions for Cursor agents
+globs: src/**/*,server/**/*
+alwaysApply: false
+---
+
+# Rivly conventions
+
+- French Riviera services marketplace prototype
+- Brand colors: navy `#10324A`, azure `#2B86BC`, amber `#E2992F`
+- Typography: Fraunces (headings), Inter (body)
+- All Anthropic API calls must stay in `server/classify.ts` — never in browser code
+- Check `docs/REVIEW_QUEUE.md` before starting; update it when done
+- Claude team reviews from `/Users/e808m/rivly-claude` — keep branches mergeable
