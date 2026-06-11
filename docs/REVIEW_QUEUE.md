@@ -1,8 +1,10 @@
 # Review Queue
 
+**GitHub:** https://github.com/Edmond808/myfr-ai
+
 ## Open items
 
-- [2026-06-12] [CURSOR] [main @ bb35594] — Phase 1-2 committed locally: Next.js + Supabase schema/API, auth (register/login), EN/FR i18n, VoiceInput (Web Speech API). **Push blocked** — run `gh auth login` then `gh repo create myfr.ai --public --source=. --remote=origin --push`. Needs: Claude code review of `app/api/jobs/route.ts` + `components/RivlyApp.tsx`
+- [2026-06-12] [CURSOR] [main @ bb35594] — Phase 1-2 pushed to GitHub: Next.js + Supabase schema/API, auth (register/login), EN/FR i18n, VoiceInput (Web Speech API). Needs: Claude code review of `app/api/jobs/route.ts` + `components/RivlyApp.tsx`
 
 ## Claude reviews
 
