@@ -111,9 +111,25 @@ export async function POST(request: Request) {
   }
 }
 
+const QUOTE_SELECT = `
+  id,
+  price_eur,
+  message,
+  status,
+  merchant:merchants (
+    id,
+    business_name,
+    rating,
+    jobs_completed,
+    is_promoted,
+    promotion_rank,
+    promotion_expires_at
+  )
+`;
+
 export async function GET(request: Request) {
   if (!isSupabaseConfigured()) {
-    return NextResponse.json({ quotes: [] });
+    return NextResponse.json({ quotes: [], jobs: [] });
   }
 
   const supabase = await createClient();
@@ -125,30 +141,83 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
-  const jobId = new URL(request.url).searchParams.get("jobId");
+  const params = new URL(request.url).searchParams;
+
+  if (params.get("mine") === "1") {
+    const { data: rows, error } = await supabase
+      .from("jobs")
+      .select(
+        `
+        id,
+        title,
+        location,
+        category,
+        status,
+        created_at,
+        quotes ( id, status )
+      `,
+      )
+      .eq("customer_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    const jobs = (rows ?? []).map((row) => {
+      const quotes = (row.quotes ?? []) as { id: string; status: string }[];
+      return {
+        id: row.id,
+        title: row.title,
+        location: row.location,
+        category: row.category,
+        status: row.status,
+        created_at: row.created_at,
+        quotes_total: quotes.length,
+        quotes_submitted: quotes.filter((q) => q.status === "submitted").length,
+      };
+    });
+
+    return NextResponse.json({ jobs });
+  }
+
+  const jobId = params.get("jobId");
   if (!jobId) {
-    return NextResponse.json({ error: "jobId required" }, { status: 400 });
+    return NextResponse.json({ error: "jobId or mine=1 required" }, { status: 400 });
+  }
+
+  const { data: job, error: jobError } = await supabase
+    .from("jobs")
+    .select(
+      `
+      id,
+      title,
+      summary,
+      location,
+      category,
+      urgency,
+      budget_estimate_eur,
+      clarifying_question,
+      status,
+      accepted_quote_id
+    `,
+    )
+    .eq("id", jobId)
+    .eq("customer_id", user.id)
+    .maybeSingle();
+
+  if (jobError) {
+    return NextResponse.json({ error: jobError.message }, { status: 500 });
+  }
+
+  if (!job) {
+    return NextResponse.json({ error: "Job not found" }, { status: 404 });
   }
 
   const { data: quotes, error } = await supabase
     .from("quotes")
-    .select(
-      `
-      id,
-      price_eur,
-      message,
-      status,
-      merchant:merchants (
-        id,
-        business_name,
-        rating,
-        jobs_completed,
-        is_promoted,
-        promotion_rank,
-        promotion_expires_at
-      )
-    `,
-    )
+    .select(QUOTE_SELECT)
     .eq("job_id", jobId)
     .order("created_at", { ascending: true });
 
@@ -156,7 +225,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ quotes: quotes ?? [] });
+  return NextResponse.json({ job, quotes: quotes ?? [] });
 }
 
 export async function PATCH(request: Request) {

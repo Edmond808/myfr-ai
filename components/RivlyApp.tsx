@@ -154,6 +154,84 @@ export function RivlyApp() {
     run();
   }, [searchParams]);
 
+  useEffect(() => {
+    const jobParam = searchParams.get("job");
+    if (!jobParam || searchParams.get("resume") === "dispatch") return;
+
+    const run = async () => {
+      if (!isSupabaseConfigured()) return;
+
+      const supabase = createClient();
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData.user) {
+        router.push(
+          `/auth/login?next=${encodeURIComponent(`/?job=${jobParam}`)}`,
+        );
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/jobs?jobId=${jobParam}`);
+        if (!res.ok) return;
+
+        const data = (await res.json()) as {
+          job: {
+            category: Category;
+            title: string;
+            summary: string;
+            location: string;
+            urgency: JobClassification["urgency"];
+            budget_estimate_eur: number | null;
+            clarifying_question: string | null;
+            status: string;
+            accepted_quote_id: string | null;
+          };
+          quotes: ApiQuote[];
+        };
+
+        if (!data.job) return;
+
+        clearTimeouts();
+        channelCleanup.current?.();
+
+        const classification: JobClassification = {
+          category: data.job.category,
+          title: data.job.title,
+          summary: data.job.summary,
+          location: data.job.location,
+          urgency: data.job.urgency,
+          budget_estimate_eur: data.job.budget_estimate_eur,
+          clarifying_question: data.job.clarifying_question,
+        };
+
+        setJob(classification);
+        setJobId(jobParam);
+        setView("dispatch");
+        setQuotes(sortQuotesRecommended(data.quotes.map(mapApiQuote)));
+        setMerchantCount(data.quotes.length);
+        setError(null);
+
+        if (data.job.status === "accepted" && data.job.accepted_quote_id) {
+          const acceptedQuote = data.quotes.find(
+            (q) => q.id === data.job.accepted_quote_id,
+          );
+          if (acceptedQuote) {
+            setAccepted(mapApiQuote(acceptedQuote));
+          }
+        } else {
+          setAccepted(null);
+        }
+
+        channelCleanup.current = subscribeToQuotes(jobParam) ?? null;
+        router.replace("/");
+      } catch {
+        /* ignore — stay on home */
+      }
+    };
+
+    run();
+  }, [searchParams]);
+
   const clearTimeouts = () => {
     timeouts.current.forEach(clearTimeout);
     timeouts.current = [];

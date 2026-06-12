@@ -178,6 +178,28 @@ export const messages = {
     jobBudget: "Customer budget estimate",
     notificationsTodo: "Email notifications on new jobs — coming soon (Resend).",
   },
+  requests: {
+    title: "My requests",
+    subtitle: "Track jobs you've sent to verified Riviera pros.",
+    empty: "No requests yet.",
+    emptyHint: "Describe what you need on the home page — your jobs will appear here.",
+    newRequest: "New request",
+    viewQuotes: "View quotes",
+    quotesCount: "{count} quote(s)",
+    quotesWaiting: "Waiting for quotes",
+    created: "Submitted",
+    statusSubmitted: "Submitted",
+    statusClassified: "Classified",
+    statusDispatched: "Sent to pros",
+    statusQuoted: "Quotes received",
+    statusAccepted: "Quote accepted",
+    statusInProgress: "In progress",
+    statusCompleted: "Completed",
+    statusDisputed: "Disputed",
+    statusCancelled: "Cancelled",
+    loginRequired: "Sign in to view your requests.",
+    backToHome: "Back to myfr.ai",
+  },
   categoryExamples: {
     groceries: "I need someone to do my groceries tomorrow morning in Cannes…",
     housekeeping:
@@ -200,6 +222,7 @@ export type Messages = {
   dispatch: Record<string, string>;
   loyalty: Record<string, string>;
   pro: Record<string, string>;
+  requests: Record<string, string>;
   urgency: Record<string, string>;
   categories: Record<string, string>;
   examples: readonly string[];
