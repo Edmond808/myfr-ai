@@ -11,7 +11,78 @@
 
 Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claude may also use local `/Users/e808m/myfr.ai`). Before starting work: `git fetch origin && git pull origin main`. After pushing a branch, append a line here. Full loop: `docs/TEAM_WORKFLOW.md`.
 
-**Current sync:** main @ `909dc76` — dual-workspace note + skills audit handoff. Claude: pull main, review `.cursor/SKILLS.md` and `docs/audits/`.
+**Current sync:** main @ `c5123a4` (PR #11 merged) — `cursor/mobile-app` @ `d15efbf` has dispatch RLS fixes + mobile setup **not yet on main**. Claude: pull `cursor/mobile-app` or wait for PR #12 merge.
+
+---
+
+## 🚨 URGENT — Claude review (2026-06-12)
+
+**Read first:** `docs/REVIEW_QUEUE.md` (this section) → `app/api/jobs/route.ts` → `lib/dispatch-job-fallback.ts` → `components/RivlyApp.tsx` → `schema.sql` (RLS helpers + `dispatch_job`).
+
+### P0: Dispatch flow broken for logged-in customers
+
+**Symptoms (reproduced, not fixed end-to-end):**
+
+1. Customer signs in as **edmond199906@gmail.com**
+2. Submits request: *concierge / groceries in Cannes* (or similar grocery delivery text)
+3. Classify succeeds; dispatch either **fails silently**, shows **demo quotes only**, or **nothing reaches pro**
+4. Pro **treg92093@gmail.com** (verified merchant) sees **no job** in `/pro` dashboard feed
+
+**Root cause (suspected):** Supabase **jobs ↔ quotes RLS infinite recursion** when `POST /api/jobs` inserts a job and calls `dispatch_job` RPC. Rate-limit count query can also hit recursion.
+
+**Files involved:**
+
+| File | Role |
+|------|------|
+| `components/RivlyApp.tsx` | `submit()` → `completeDispatch()` → `dispatchJobClient()`; on API error falls back to `runDemoDispatch()` (demo quotes — **masks real failure**) |
+| `app/api/jobs/route.ts` | Auth gate, rate limit, `persistClassifiedJob()`, `dispatch_job` RPC, inline fallback |
+| `lib/dispatch-job-fallback.ts` | `persistClassifiedJob`, `inlineDispatchJob`, `isDispatchRecoverableError`, `normalizeJobCategory` |
+| `schema.sql` | `is_job_customer`, `is_merchant_on_job` security-definer helpers; `dispatch_job` sets `row_security = off` |
+| `scripts/check-supabase.mjs` | Probes `is_job_customer` RPC — run `node scripts/check-supabase.mjs` |
+
+**Cursor attempted fix (commits `91479ee`, `d15efbf` on `cursor/mobile-app`):** admin persist + inline dispatch on recursion; client demo fallback. **Still not verified** with real Supabase + both test accounts.
+
+**Migration gap:** Code references `supabase/migrations/008_fix_jobs_quotes_rls_recursion.sql` but **file does not exist** — SQL is in `schema.sql` only. Claude must create migration `008` from `schema.sql` diff and run in Supabase SQL editor.
+
+### Exact test case
+
+```
+Customer: edmond199906@gmail.com (logged in)
+Pro:      treg92093@gmail.com (verified merchant, groceries/concierge category)
+Request:  "I need groceries delivered in Cannes" (location: Cannes)
+Expected: Job created → dispatch_job creates pending quotes → pro sees job in feed → customer sees real quotes (not demo)
+Actual:   Dispatch fails or demo fallback; pro feed empty
+```
+
+**Verify:** `node scripts/check-supabase.mjs` → `is_job_customer` installed. Then `./scripts/dev.sh`, login as customer, submit, check Supabase `jobs` + `quotes` tables and pro dashboard.
+
+### Mobile app — SDK 54/56 status
+
+| Item | Status |
+|------|--------|
+| `package.json` | **SDK 56** (`expo` ~56.0.11) — unchanged |
+| `package-lock.json` | Partial lockfile drift toward SDK 54 deps (incomplete downgrade — **do not assume SDK 54 works**) |
+| App Store Expo Go on physical iPhone | **Broken** — only supports SDK 54; documented in `docs/EXPO_SIMPLE.md`, `mobile/README.md` |
+| Working path today | **iPhone Simulator:** `cd mobile && npx expo start` → press **`i`** (Xcode required) |
+| Tab icons | Switched from `expo-symbols` → `@expo/vector-icons` Ionicons (`mobile/app/(tabs)/_layout.tsx`) |
+
+**Claude:** Decide SDK 54 full downgrade vs stay on 56 + simulator/EAS. Do not half-upgrade lockfile without `package.json`.
+
+### Expo EAS setup
+
+- Project linked: `ec89741c-6973-4ab8-9047-6934e9e9f072` (`edmond808` / `myfrai`)
+- Setup script: `./scripts/mobile-expo-setup.sh` (copies `.env.local` → `mobile/.env`, EAS secrets)
+- Docs: `docs/EXPO_SIMPLE.md`, `mobile/README.md` (EAS build section)
+- expo.dev: set **Base directory** = `mobile`, **Production branch** = `main`
+
+### Fix order for Claude
+
+1. **Dispatch end-to-end** — migration `008`, run `check-supabase.mjs`, fix `POST /api/jobs` + `dispatch_job` so pro feed receives jobs (test accounts above)
+2. **Remove or gate demo fallback** for authenticated users — don't mask production failures
+3. **Mobile SDK decision** — 54 downgrade or 56 + EAS dev build
+4. Everything else (loyalty, promotions, i18n audits)
+
+---
 
 ## Pre-release QA
 
