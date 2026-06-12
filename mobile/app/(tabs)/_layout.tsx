@@ -1,4 +1,4 @@
-import { SymbolView } from "expo-symbols";
+import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 
@@ -22,52 +22,28 @@ export default function TabLayout() {
         name="index"
         options={{
           title: t.home.sendRequest,
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: "house.fill", android: "home", web: "home" }}
-              tintColor={color}
-              size={24}
-            />
-          ),
+          tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="requests"
         options={{
           title: t.requests.title,
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: "list.bullet", android: "list", web: "list" }}
-              tintColor={color}
-              size={24}
-            />
-          ),
+          tabBarIcon: ({ color }) => <Ionicons name="list" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="pro"
         options={{
           title: t.pro.forPros,
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: "briefcase.fill", android: "work", web: "work" }}
-              tintColor={color}
-              size={24}
-            />
-          ),
+          tabBarIcon: ({ color }) => <Ionicons name="briefcase" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
           title: t.auth.login,
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: "person.fill", android: "person", web: "person" }}
-              tintColor={color}
-              size={24}
-            />
-          ),
+          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
           ...(Platform.OS === "android" ? { title: "Account" } : {}),
         }}
       />

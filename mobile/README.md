@@ -97,6 +97,20 @@ Mobile auth sends `Authorization: Bearer <token>` to `/api/jobs`; web cookie aut
 
 This app is linked to Expo project **`ec89741c-6973-4ab8-9047-6934e9e9f072`** (`owner`: `edmond808`, slug: `myfrai`) via `app.json` → `extra.eas.projectId`. The GitHub repo **Edmond808/myfr-ai** is connected on [expo.dev](https://expo.dev).
 
+### Non-dev: first cloud build
+
+```bash
+npm install --global eas-cli   # once per Mac
+eas login                      # sign in at expo.dev (required before any build)
+cd mobile
+npm install
+eas build --profile preview --platform ios
+```
+
+If `eas login` fails, create an account at [expo.dev/signup](https://expo.dev/signup) and ensure your Expo user owns project `myfrai` under account `edmond808`.
+
+Local dev is unchanged: `npx expo start` still works with Expo Go or the simulator — EAS is only for installable native builds.
+
 Because the Expo app lives in a **monorepo subdirectory**, cloud builds must use the **`mobile`** base directory (not the repo root).
 
 ### expo.dev dashboard checklist
