@@ -69,6 +69,9 @@ export const messages: Messages = {
     noMerchantsYet:
       "Pas encore de pros vérifiés dans cette zone — nous recrutons manuellement.",
     waitingAuth: "Connectez-vous pour envoyer aux pros vérifiés",
+    authBannerTitle: "Créez un compte gratuit pour réserver ce pro",
+    authBannerRegister: "S'inscrire",
+    authBannerSignIn: "Se connecter",
   },
   urgency: {
     today: "Aujourd'hui",

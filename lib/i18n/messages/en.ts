@@ -66,6 +66,9 @@ export const messages = {
     noMerchantsYet:
       "No verified merchants in this area yet — we're onboarding pros manually.",
     waitingAuth: "Sign in to dispatch to verified pros",
+    authBannerTitle: "Create a free account to book this pro",
+    authBannerRegister: "Register",
+    authBannerSignIn: "Sign in",
   },
   urgency: {
     today: "Needed today",

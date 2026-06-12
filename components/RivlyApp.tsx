@@ -18,6 +18,7 @@ import type {
   Category,
   JobClassification,
   PendingRequest,
+  PendingSession,
   Quote,
   View,
 } from "@/lib/types";
@@ -44,8 +45,10 @@ export function RivlyApp() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
   const [userInitial, setUserInitial] = useState<string | null>(null);
+  const [pendingRequest, setPendingRequest] = useState<PendingRequest | null>(null);
   const [acceptingQuoteId, setAcceptingQuoteId] = useState<string | null>(null);
   const [merchantCount, setMerchantCount] = useState(3);
+  const isAnonymousSession = isSupabaseConfigured() && !userEmail;
   const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
   const channelCleanup = useRef<(() => void) | null>(null);
 
@@ -127,9 +130,19 @@ export function RivlyApp() {
       const { data } = await supabase.auth.getUser();
       if (!data.user) return;
 
-      const req = JSON.parse(stored) as PendingRequest;
+      let session: PendingSession;
+      try {
+        const parsed = JSON.parse(stored) as PendingSession | PendingRequest;
+        session =
+          "request" in parsed && parsed.request?.classification
+            ? parsed
+            : { request: parsed as PendingRequest };
+      } catch {
+        return;
+      }
+
       sessionStorage.removeItem("myfr-pending");
-      await completeDispatch(req);
+      await completeDispatch(session.request);
       router.replace("/");
     };
     run();
@@ -227,6 +240,7 @@ export function RivlyApp() {
   };
 
   const completeDispatch = async (req: PendingRequest) => {
+    setPendingRequest(req);
     setJob(req.classification);
     setQuotes([]);
     setAccepted(null);
@@ -292,6 +306,35 @@ export function RivlyApp() {
     }
   };
 
+  const startAnonymousDispatch = (req: PendingRequest) => {
+    clearTimeouts();
+    channelCleanup.current?.();
+    channelCleanup.current = null;
+    setPendingRequest(req);
+    setJob(req.classification);
+    setQuotes([]);
+    setAccepted(null);
+    setJobId(null);
+    setView("dispatch");
+    simulateDemoQuotes(req.classification);
+  };
+
+  const savePendingAndNavigate = (
+    path: "/auth/register" | "/auth/login",
+    quote?: Quote,
+  ) => {
+    if (!pendingRequest) return;
+
+    const payload: PendingSession = {
+      request: pendingRequest,
+      ...(quote ? { quote } : {}),
+    };
+    sessionStorage.setItem("myfr-pending", JSON.stringify(payload));
+    router.push(
+      `${path}?next=${encodeURIComponent("/?resume=dispatch")}`,
+    );
+  };
+
   const submit = async () => {
     if (!text.trim() || loading) return;
     setLoading(true);
@@ -310,10 +353,7 @@ export function RivlyApp() {
         const { data } = await supabase.auth.getUser();
 
         if (!data.user) {
-          sessionStorage.setItem("myfr-pending", JSON.stringify(req));
-          router.push(
-            `/auth/register?next=${encodeURIComponent("/?resume=dispatch")}`,
-          );
+          startAnonymousDispatch(req);
           return;
         }
 
@@ -336,6 +376,7 @@ export function RivlyApp() {
     setText("");
     setJob(null);
     setJobId(null);
+    setPendingRequest(null);
     setQuotes([]);
     setAccepted(null);
     setError(null);
@@ -347,6 +388,11 @@ export function RivlyApp() {
   };
 
   const handleAcceptQuote = async (quote: Quote) => {
+    if (isAnonymousSession && pendingRequest) {
+      savePendingAndNavigate("/auth/register", quote);
+      return;
+    }
+
     if (!quote.id || !jobId) {
       setAccepted(quote);
       return;
@@ -408,6 +454,11 @@ export function RivlyApp() {
             onReset={reset}
             onAccept={handleAcceptQuote}
             acceptingQuoteId={acceptingQuoteId}
+            showAuthBanner={
+              isAnonymousSession && quotes.some((q) => q.price > 0)
+            }
+            onAuthRegister={() => savePendingAndNavigate("/auth/register")}
+            onAuthSignIn={() => savePendingAndNavigate("/auth/login")}
           />
         )}
       </div>

@@ -4,6 +4,8 @@
 
 ## Open items
 
+- [2026-06-12] [CURSOR] [cursor/auth-after-quotes] — Anonymous users see demo quotes before auth; dispatch banner + accept-quote gate; logged-in flow unchanged. Needs review: submit logged out → quotes → register → real dispatch.
+
 - [2026-06-12] [CURSOR] [cursor/simple-setup] — Non-dev setup: `docs/SETUP_SIMPLE.md`, `npm run setup` wizard, OAuth hidden behind "More options". Needs review: run wizard flow on fresh clone.
 
 - [2026-06-12] [CURSOR] [cursor/setup-bundle] — **User action:** Follow `docs/SETUP_CHECKLIST.md` — create Supabase project, run `supabase/00_RUN_THIS_IN_SUPABASE.sql`, `npm run check:supabase`.
