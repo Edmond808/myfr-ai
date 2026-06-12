@@ -1,3 +1,4 @@
+import type { QuoteFilterState } from "./quote-filters";
 import type { JobClassification } from "./types";
 
 export async function classifyRequestClient(
@@ -34,6 +35,19 @@ export async function dispatchJobClient(payload: {
   }
 
   return response.json() as Promise<{ jobId: string; dispatched: number }>;
+}
+
+export async function logQuoteFiltersClient(payload: {
+  jobId?: string | null;
+  sessionId: string;
+  sortBy: QuoteFilterState["sortBy"];
+  filters: QuoteFilterState["filters"];
+}): Promise<void> {
+  await fetch("/api/analytics/quote-filters", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function acceptQuoteClient(payload: {

@@ -142,7 +142,10 @@ export async function GET(request: Request) {
         id,
         business_name,
         rating,
-        jobs_completed
+        jobs_completed,
+        is_promoted,
+        promotion_rank,
+        promotion_expires_at
       )
     `,
     )

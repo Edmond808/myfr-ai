@@ -38,6 +38,9 @@ create table merchants (
   email text,
   rating numeric(2,1) default 0,
   jobs_completed int default 0,
+  is_promoted boolean not null default false,
+  promotion_rank int not null default 0,
+  promotion_expires_at timestamptz,
   stripe_account_id text,              -- Stripe Connect Express acct_...
   stripe_onboarded boolean default false,
   commission_rate numeric(4,3) default 0.150,  -- per-merchant override possible
@@ -172,7 +175,7 @@ where j.status in ('dispatched','quoted');
 
 -- ============ DISPATCH FUNCTION ============
 -- Called server-side after classification: creates pending quotes
--- for up to 3 verified merchants matching category + area.
+-- for ALL verified merchants matching category + area (promoted first).
 create or replace function dispatch_job(p_job_id uuid)
 returns int language plpgsql security definer as $$
 declare
@@ -186,8 +189,11 @@ begin
    and j.location = any(m.service_areas)
    and m.status = 'verified'
   where j.id = p_job_id
-  order by m.rating desc, m.jobs_completed desc
-  limit 3;
+  order by
+    (m.is_promoted and (m.promotion_expires_at is null or m.promotion_expires_at > now())) desc,
+    m.promotion_rank desc,
+    m.rating desc,
+    m.jobs_completed desc;
 
   get diagnostics v_count = row_count;
   if v_count > 0 then

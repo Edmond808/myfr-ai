@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, Clock, MapPin, Sparkles } from "lucide-react";
 import {
   BRAND,
@@ -7,15 +8,24 @@ import {
   COMMISSION,
   PALETTE,
 } from "@/lib/constants";
+import { logQuoteFiltersClient } from "@/lib/api-client";
 import { payPrice } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import {
+  applyQuoteFilters,
+  DEFAULT_QUOTE_FILTERS,
+  type QuoteFilterState,
+} from "@/lib/quote-filters";
+import { getOrCreateSessionId } from "@/lib/session";
 import type { JobClassification, LoyaltyTier, Quote } from "@/lib/types";
 import { LoyaltyBadge } from "./LoyaltyBadge";
 import { LoyaltyProgressTease, QuoteLoyaltyPrice } from "./QuoteLoyaltyPrice";
+import { QuoteFilterBar } from "./QuoteFilterBar";
 import { Stars } from "./Stars";
 
 interface DispatchViewProps {
   job: JobClassification;
+  jobId?: string | null;
   quotes: Quote[];
   accepted: Quote | null;
   merchantCount: number;
@@ -32,6 +42,7 @@ interface DispatchViewProps {
 
 export function DispatchView({
   job,
+  jobId,
   quotes,
   accepted,
   merchantCount,
@@ -52,10 +63,39 @@ export function DispatchView({
     accepted?.memberPrice ??
     (accepted ? payPrice(accepted.price, effectiveTier, isLoggedIn) : 0);
 
+  const [filterState, setFilterState] = useState<QuoteFilterState>(
+    DEFAULT_QUOTE_FILTERS,
+  );
+  const analyticsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const filteredQuotes = useMemo(
+    () => applyQuoteFilters(quotes, filterState),
+    [quotes, filterState],
+  );
+
+  useEffect(() => {
+    if (analyticsTimer.current) clearTimeout(analyticsTimer.current);
+
+    analyticsTimer.current = setTimeout(() => {
+      void logQuoteFiltersClient({
+        jobId: jobId ?? null,
+        sessionId: getOrCreateSessionId(),
+        sortBy: filterState.sortBy,
+        filters: filterState.filters,
+      });
+    }, 500);
+
+    return () => {
+      if (analyticsTimer.current) clearTimeout(analyticsTimer.current);
+    };
+  }, [filterState, jobId]);
+
   const handleAccept = (quote: Quote) => {
     const memberPrice = payPrice(quote.price, effectiveTier, isLoggedIn);
     onAccept({ ...quote, memberPrice });
   };
+
+  const clearFilters = () => setFilterState(DEFAULT_QUOTE_FILTERS);
 
   return (
     <main className="max-w-3xl mx-auto px-6 pt-4 pb-20">
@@ -202,18 +242,69 @@ export function DispatchView({
             </div>
           )}
 
-          <div className="space-y-3">
-            {quotes.map((q) => (
+          {quotes.length > 0 && (
+            <>
+              <QuoteFilterBar
+                state={filterState}
+                onChange={setFilterState}
+                onClear={clearFilters}
+              />
+
+              {filteredQuotes.length < quotes.length && filteredQuotes.length > 0 && (
+                <p className="text-xs mb-3" style={{ color: "#5C7E92" }}>
+                  {t.dispatch.showingQuotes
+                    .replace("{shown}", String(filteredQuotes.length))
+                    .replace("{total}", String(quotes.length))}
+                </p>
+              )}
+            </>
+          )}
+
+          {quotes.length > 0 && filteredQuotes.length === 0 && (
+            <div
+              className="rounded-2xl p-6 text-center text-sm mb-4"
+              style={{ background: PALETTE.azureSoft, color: "#3D6075" }}
+            >
+              {t.dispatch.filtersEmpty}
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="block mx-auto mt-3 underline"
+                style={{ color: PALETTE.azure }}
+              >
+                {t.dispatch.clearFilters}
+              </button>
+            </div>
+          )}
+
+          <div className="max-h-[480px] overflow-y-auto space-y-3 pr-1">
+            {filteredQuotes.map((q) => (
               <div
                 key={q.id ?? q.merchant.name}
                 className={`glass-rivly lift-hover rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap${q.price ? " pop-in" : ""}`}
                 style={{
-                  borderColor: q.price ? "rgba(43, 134, 188, 0.35)" : undefined,
+                  borderColor: q.merchant.isPromoted
+                    ? "rgba(226, 153, 47, 0.45)"
+                    : q.price
+                      ? "rgba(43, 134, 188, 0.35)"
+                      : undefined,
                 }}
               >
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span style={{ fontWeight: 600 }}>{q.merchant.name}</span>
+                    {q.merchant.isPromoted && (
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full"
+                        style={{
+                          background: PALETTE.amberSoft,
+                          color: "#7A5212",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {t.dispatch.sponsored}
+                      </span>
+                    )}
                     <BadgeCheck size={16} style={{ color: PALETTE.azure }} />
                   </div>
                   <div
