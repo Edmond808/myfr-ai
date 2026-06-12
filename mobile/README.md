@@ -93,6 +93,62 @@ Mobile auth sends `Authorization: Bearer <token>` to `/api/jobs`; web cookie aut
 - **401 on dispatch** — Sign in on the Account tab first (real dispatch requires auth).
 - **Demo quotes only** — Expected when anonymous with Supabase configured; register to dispatch for real.
 
+## Expo GitHub + EAS cloud builds
+
+This app is linked to Expo project **`ec89741c-6973-4ab8-9047-6934e9e9f072`** (`owner`: `edmond808`, slug: `myfrai`) via `app.json` → `extra.eas.projectId`. The GitHub repo **Edmond808/myfr-ai** is connected on [expo.dev](https://expo.dev).
+
+Because the Expo app lives in a **monorepo subdirectory**, cloud builds must use the **`mobile`** base directory (not the repo root).
+
+### expo.dev dashboard checklist
+
+1. **Project → GitHub settings**
+   - Repo: `Edmond808/myfr-ai`
+   - **Base directory:** `mobile`
+   - Branch for builds: `cursor/mobile-app` (or `main` when merged)
+
+2. **Project → Environment variables** (Secrets)
+   Set for **production** (and **preview** if you use that profile):
+
+   | Variable | Example / notes |
+   |----------|-----------------|
+   | `EXPO_PUBLIC_API_URL` | `https://myfr.ai` — deployed Next.js API (not `localhost`) |
+   | `EXPO_PUBLIC_SUPABASE_URL` | Same as web `NEXT_PUBLIC_SUPABASE_URL` |
+   | `EXPO_PUBLIC_SUPABASE_ANON_KEY` | Same as web `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+
+   `EXPO_PUBLIC_*` values are baked into the app at **build time**. Rebuild after changing them.
+
+3. **First-time EAS setup** (once per platform, from your Mac)
+   ```bash
+   cd mobile
+   npm install
+   npx eas-cli login
+   npx eas build -p ios --profile production    # or android / all
+   ```
+   GitHub-triggered builds require at least one successful local EAS build per platform ([Expo docs](https://docs.expo.dev/build/building-from-github/)).
+
+4. **Trigger builds from GitHub**
+   - **Dashboard:** Project → Builds → **Build from GitHub** → pick branch, platform, profile (`development` | `preview` | `production`)
+   - **PR label:** `eas-build-ios:production`, `eas-build-android:preview`, `eas-build-all`, etc.
+   - **Workflows (recommended):** add `.eas/workflows/` under `mobile/` for push-to-branch automation ([EAS Workflows](https://docs.expo.dev/eas/workflows/))
+
+5. **Build profiles** (`mobile/eas.json`)
+   - `development` — dev client, internal distribution
+   - `preview` — internal test builds (TestFlight / internal APK)
+   - `production` — store-ready builds
+
+### Local dev vs cloud build
+
+| | `npx expo start` (local) | EAS cloud build |
+|--|--------------------------|-----------------|
+| Output | Metro dev server + QR / simulator | Native `.ipa` / `.apk` / `.aab` |
+| Env vars | `mobile/.env` | expo.dev **Environment variables** |
+| API URL | `localhost` or LAN IP OK | Must be public HTTPS (e.g. production deploy) |
+| Hot reload | Yes | No — full native compile |
+| Expo Go | Yes (managed workflow) | No — install the built binary |
+| When to use | Day-to-day development | TestFlight, Play internal testing, App Store |
+
+Local development still needs the **web API** running (`npm run dev` in repo root) unless `EXPO_PUBLIC_API_URL` points at a deployed backend.
+
 ## Branch
 
 Developed on `cursor/mobile-app`.

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "myfr.ai",
-    "slug": "myfr-ai",
+    "slug": "myfrai",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -41,7 +41,12 @@
       "typedRoutes": true
     },
     "extra": {
-      "apiUrl": "http://localhost:3000"
-    }
+      "apiUrl": "http://localhost:3000",
+      "router": {},
+      "eas": {
+        "projectId": "ec89741c-6973-4ab8-9047-6934e9e9f072"
+      }
+    },
+    "owner": "edmond808"
   }
 }
