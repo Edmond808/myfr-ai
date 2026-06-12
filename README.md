@@ -13,9 +13,11 @@
 
 ```bash
 npm install
-cp .env.example .env   # add keys when ready
-npm run dev            # http://localhost:3000
+cp .env.example .env.local   # add keys when ready
+npm run dev                  # http://localhost:3000
 ```
+
+For a full Supabase go-live walkthrough, see **[docs/SETUP_CHECKLIST.md](docs/SETUP_CHECKLIST.md)** (~15 min).
 
 Works in **demo mode** without Supabase or Anthropic keys — uses keyword classification and simulated quotes.
 
@@ -25,11 +27,13 @@ If dev shows `Cannot find module './NNN.js'` in `.next/server/webpack-runtime.js
 
 ## Supabase setup (Phase 2)
 
+Follow **[docs/SETUP_CHECKLIST.md](docs/SETUP_CHECKLIST.md)** — or the short version:
+
 1. Create project in **EU region** (Frankfurt or Paris)
-2. Run `schema.sql` in SQL Editor
+2. Run [`supabase/00_RUN_THIS_IN_SUPABASE.sql`](supabase/00_RUN_THIS_IN_SUPABASE.sql) in SQL Editor
 3. Enable Auth: email + password (Google optional)
 4. Enable Realtime on `quotes` table
-5. Add env vars to `.env`
+5. Copy `.env.example` → `.env.local`, add keys, then `npm run check:supabase`
 
 ## Auth flow
 
@@ -61,7 +65,10 @@ app/
   auth/             # Login, register, OAuth callback
 components/         # RivlyApp, HomeView, DispatchView, LoadingSplash, auth forms
 lib/                # classify, constants, i18n, supabase clients
-schema.sql          # Full Supabase schema + RLS + dispatch_job()
+schema.sql                        # Source schema (also in supabase/ bundle)
+supabase/00_RUN_THIS_IN_SUPABASE.sql  # One-shot SQL for new projects
+docs/SETUP_CHECKLIST.md           # 15-min go-live walkthrough
+scripts/check-supabase.mjs        # npm run check:supabase
 ```
 
 ## Phases completed

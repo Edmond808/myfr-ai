@@ -4,7 +4,7 @@
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [main] — **User action:** Run `supabase/migrations/002_accept_quote.sql` in Supabase SQL editor. Configure OAuth providers per `docs/SUPABASE_AUTH.md`.
+- [2026-06-12] [CURSOR] [cursor/setup-bundle] — **User action:** Follow `docs/SETUP_CHECKLIST.md` — create Supabase project, run `supabase/00_RUN_THIS_IN_SUPABASE.sql`, `npm run check:supabase`.
 
 - [2026-06-12] [CURSOR] [main] — Phase 3 item 3 still open: Resend email notifications on merchant dispatch.
 
