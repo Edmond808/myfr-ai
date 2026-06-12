@@ -44,7 +44,8 @@ Leave review notes in `docs/REVIEW_QUEUE.md` under "Claude reviews".
 - `components/RivlyApp.tsx` — main state + flow
 - `app/api/classify/route.ts` — AI dispatch (never call Anthropic from browser)
 - `lib/constants.ts` — brand (`myfr.ai`), merchants, categories
-- `components/LoadingSplash.tsx` — entry splash (French tricolor)
+- `components/LoadingSplash.tsx` — entry splash (tricolor wordmark)
+- `components/BrandWordmark.tsx` — shared my/fr/.ai logo
 
 ## Do not
 

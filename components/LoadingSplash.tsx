@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BRAND, BRAND_TAGLINE, PALETTE } from "@/lib/constants";
+import { BrandWordmark } from "./BrandWordmark";
+import { BRAND_TAGLINE, PALETTE } from "@/lib/constants";
 
-const SPLASH_HOLD_MS = 1200;
+const SPLASH_HOLD_MS = 1600;
 const SPLASH_FADE_MS = 450;
-const STRIPE_ENTER_MS = 500;
+const LETTER_ENTER_MS = 650;
 
 interface LoadingSplashProps {
   onComplete: () => void;
@@ -19,7 +20,7 @@ export function LoadingSplash({ onComplete }: LoadingSplashProps) {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(mq.matches);
 
-    const enterMs = mq.matches ? 0 : STRIPE_ENTER_MS;
+    const enterMs = mq.matches ? 0 : LETTER_ENTER_MS;
     const holdMs = mq.matches ? 600 : SPLASH_HOLD_MS;
 
     const holdTimer = window.setTimeout(() => setPhase("hold"), enterMs);
@@ -41,19 +42,9 @@ export function LoadingSplash({ onComplete }: LoadingSplashProps) {
       aria-hidden={phase === "exit"}
       role="presentation"
     >
-      <div className="splash-flag" aria-hidden>
-        <div className="splash-stripe splash-stripe-blue" />
-        <div className="splash-stripe splash-stripe-white" />
-        <div className="splash-stripe splash-stripe-red" />
-      </div>
       <div className="splash-brand">
-        <p
-          className="splash-wordmark"
-          style={{ fontFamily: "var(--font-fraunces), serif", color: PALETTE.navy }}
-        >
-          {BRAND}
-        </p>
-        <p className="splash-tagline" style={{ color: PALETTE.azure }}>
+        <BrandWordmark size="lg" animate={!reducedMotion} className="splash-wordmark-size" />
+        <p className="splash-tagline" style={{ color: PALETTE.navy }}>
           {BRAND_TAGLINE}
         </p>
       </div>

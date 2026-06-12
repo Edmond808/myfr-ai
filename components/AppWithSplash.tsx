@@ -6,26 +6,23 @@ import { RivlyApp } from "./RivlyApp";
 
 const SPLASH_SESSION_KEY = "myfr-splash-seen";
 
-type SplashState = "checking" | "show" | "done";
-
 export function AppWithSplash() {
-  const [splashState, setSplashState] = useState<SplashState>("checking");
+  const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
-    setSplashState(sessionStorage.getItem(SPLASH_SESSION_KEY) ? "done" : "show");
+    if (!sessionStorage.getItem(SPLASH_SESSION_KEY)) {
+      setShowSplash(true);
+    }
   }, []);
-
-  const showSplash = splashState === "show";
-  const showApp = splashState !== "checking";
 
   const handleSplashComplete = () => {
     sessionStorage.setItem(SPLASH_SESSION_KEY, "1");
-    setSplashState("done");
+    setShowSplash(false);
   };
 
   return (
     <>
-      {showApp && <RivlyApp />}
+      <RivlyApp />
       {showSplash && <LoadingSplash onComplete={handleSplashComplete} />}
     </>
   );

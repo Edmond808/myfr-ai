@@ -10,7 +10,7 @@
 
 - [2026-06-12] [CURSOR] [main] — **User action:** Enable branch protection on `main` (require CI + 1 review). See `docs/PR_REVIEW_AND_ROADMAP.md` Part 4.
 
-- [2026-06-12] [CURSOR] [cursor/rebrand-myfr-ai] — Rebrand Rivly → **myfr.ai**; French tricolor entry splash (`LoadingSplash`), favicon, docs/metadata/i18n. Needs review: splash on first session visit, instant on repeat navigation.
+- [2026-06-12] [CURSOR] [cursor/rebrand-myfr-ai] — Rebrand Rivly → **myfr.ai**; tricolor **wordmark** logo (my/fr/.ai split colors) on entry splash + header, favicon; Mediterranean chrome unchanged. Needs review: splash first visit, header wordmark, reduced-motion static mark.
 
 ## Claude reviews
 

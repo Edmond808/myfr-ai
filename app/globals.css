@@ -276,7 +276,7 @@ body {
   .pop-in,
   .sheen-cta::after,
   .sonar-dot,
-  .splash-stripe,
+  .brand-wordmark-animated .brand-segment,
   .splash-brand {
     animation: none !important;
   }
@@ -286,28 +286,58 @@ body {
   }
 }
 
-/* ── Entry splash — French tricolor gateway ── */
+/* ── Entry splash — tricolor wordmark gateway ── */
 
-@keyframes splash-stripe-rise {
+@keyframes splash-letter-in {
   from {
     opacity: 0;
-    transform: scaleY(0.35);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: scaleY(1);
+    transform: translateY(0);
   }
 }
 
 @keyframes splash-brand-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.brand-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.brand-my {
+  color: #002395;
+}
+
+.brand-fr {
+  color: #ffffff;
+  paint-order: stroke fill;
+}
+
+.brand-ai {
+  color: #ed2939;
+}
+
+.brand-wordmark-animated .brand-my {
+  animation: splash-letter-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.brand-wordmark-animated .brand-fr {
+  animation: splash-letter-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.brand-wordmark-animated .brand-ai {
+  animation: splash-letter-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 }
 
 .splash-overlay {
@@ -318,7 +348,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.75rem;
   background:
     radial-gradient(ellipse 120% 80% at 50% -20%, rgba(43, 134, 188, 0.35) 0%, transparent 55%),
     radial-gradient(ellipse 90% 60% at 100% 50%, rgba(226, 153, 47, 0.14) 0%, transparent 50%),
@@ -332,49 +361,12 @@ body {
   pointer-events: none;
 }
 
-.splash-flag {
-  display: flex;
-  width: 132px;
-  height: 88px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow:
-    0 12px 40px rgba(16, 50, 74, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.55) inset;
-}
-
-.splash-stripe {
-  flex: 1;
-  transform-origin: bottom center;
-  animation: splash-stripe-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.splash-stripe-blue {
-  background: #002395;
-  animation-delay: 0.05s;
-}
-
-.splash-stripe-white {
-  background: #ffffff;
-  animation-delay: 0.15s;
-}
-
-.splash-stripe-red {
-  background: #ed2939;
-  animation-delay: 0.25s;
-}
-
-.splash-overlay[data-reduced-motion="true"] .splash-stripe {
-  opacity: 1;
-  transform: none;
-}
-
 .splash-brand {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
-  animation: splash-brand-in 0.6s ease 0.35s both;
+  gap: 0.75rem;
+  animation: splash-brand-in 0.5s ease 0.45s both;
 }
 
 .splash-overlay[data-reduced-motion="true"] .splash-brand {
@@ -382,17 +374,20 @@ body {
   transform: none;
 }
 
-.splash-wordmark {
-  margin: 0;
-  font-size: clamp(1.75rem, 5vw, 2.25rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+.splash-overlay[data-reduced-motion="true"] .brand-segment {
+  opacity: 1;
+  transform: none;
 }
 
 .splash-tagline {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.splash-wordmark-size {
+  font-size: clamp(2rem, 6vw, 2.625rem) !important;
 }
