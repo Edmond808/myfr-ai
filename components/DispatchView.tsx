@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, Clock, MapPin, Sparkles } from "lucide-react";
 import { CATEGORY_ICONS } from "@/lib/category-icons";
+import { normalizeJobCategory } from "@/lib/dispatch-job-fallback";
 import { BRAND, COMMISSION, PALETTE } from "@/lib/constants";
 import { logQuoteFiltersClient } from "@/lib/api-client";
 import { formatMerchantEta } from "@/lib/format-eta";
@@ -54,7 +55,8 @@ export function DispatchView({
   completedBookings = 0,
 }: DispatchViewProps) {
   const { t } = useLocale();
-  const CatIcon = CATEGORY_ICONS[job.category];
+  const category = normalizeJobCategory(job.category);
+  const CatIcon = CATEGORY_ICONS[category];
   const effectiveTier = isLoggedIn ? loyaltyTier : 0;
   const acceptedPayPrice =
     accepted?.memberPrice ??
@@ -112,7 +114,7 @@ export function DispatchView({
               className="flex items-center gap-2 text-sm"
               style={{ color: PALETTE.azure, fontWeight: 600 }}
             >
-              <CatIcon size={16} /> {t.categories[job.category]}
+              <CatIcon size={16} /> {t.categories[category]}
             </div>
             <h2
               className="mt-1"

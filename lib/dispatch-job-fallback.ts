@@ -1,5 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { JobClassification } from "./types";
+import type { Category, JobClassification } from "./types";
+import { CATEGORIES } from "./types";
+
+export function normalizeJobCategory(category: unknown): Category {
+  return CATEGORIES.includes(category as Category)
+    ? (category as Category)
+    : "concierge";
+}
 
 /** Server-side dispatch when `dispatch_job` RPC references missing promotion columns. */
 export async function inlineDispatchJob(
@@ -62,5 +69,56 @@ export function isDispatchRpcSchemaError(message: string): boolean {
   return /is_promoted|promotion_rank|promotion_expires_at/i.test(message);
 }
 
+/** RPC/RLS failures where inline dispatch or client demo fallback should run. */
+export function isDispatchRecoverableError(message: string): boolean {
+  return (
+    isDispatchRpcSchemaError(message) ||
+    /infinite recursion detected in policy/i.test(message)
+  );
+}
+
 export const DISPATCH_SCHEMA_HINT =
-  "Database schema out of date — run supabase/migrations/004_promoted_and_analytics.sql in the Supabase SQL editor.";
+  "Database schema out of date — run supabase/migrations/008_fix_jobs_quotes_rls_recursion.sql in the Supabase SQL editor.";
+
+/** Insert a classified job; use service role when customer RLS blocks the row. */
+export async function persistClassifiedJob(
+  userClient: SupabaseClient,
+  payload: {
+    jobId: string;
+    userId: string;
+    rawRequest: string;
+    classification: JobClassification;
+  },
+  adminClient: SupabaseClient | null,
+): Promise<void> {
+  const { jobId, userId, rawRequest, classification } = payload;
+  const row = {
+    id: jobId,
+    customer_id: userId,
+    raw_request: rawRequest,
+    category: classification.category,
+    title: classification.title,
+    summary: classification.summary,
+    location: classification.location,
+    urgency: classification.urgency,
+    budget_estimate_eur: classification.budget_estimate_eur,
+    clarifying_question: classification.clarifying_question,
+    status: "classified" as const,
+  };
+
+  const { error } = await userClient.from("jobs").insert(row);
+  if (!error) return;
+
+  if (!isDispatchRecoverableError(error.message)) {
+    throw new Error(error.message);
+  }
+
+  if (!adminClient) {
+    throw new Error(DISPATCH_SCHEMA_HINT);
+  }
+
+  const { error: adminError } = await adminClient.from("jobs").insert(row);
+  if (adminError) {
+    throw new Error(adminError.message);
+  }
+}

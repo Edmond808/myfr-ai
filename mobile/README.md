@@ -5,8 +5,21 @@ React Native app for **myfr.ai** — shares Supabase auth and calls the existing
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 20+
-- [Expo Go](https://expo.dev/go) on your phone **or** Xcode (iPhone Simulator on Mac)
+- **Xcode** (iPhone Simulator on Mac) — **recommended for SDK 56**
 - The **web app** running locally (`npm run dev` in repo root) for AI classify + dispatch
+
+> **Non-dev quick guide:** [docs/EXPO_SIMPLE.md](../docs/EXPO_SIMPLE.md)
+
+### Expo Go on a physical iPhone (SDK 56)
+
+This project uses **Expo SDK 56** (`expo` ~56.0.11 in `package.json`). As of mid-2026, **Expo Go from the App Store on a real iPhone only supports up to SDK 54** — Apple has not approved SDK 55/56 Expo Go builds yet.
+
+| What you see | Why |
+|--------------|-----|
+| “Project is incompatible with this version of Expo Go” on iPhone | App Store Expo Go ≠ SDK 56 |
+| Updating Expo Go from the App Store | **Does not fix it** — store build is still SDK 54 |
+
+**Works today:** after `npx expo start`, press **`i`** to open the **iPhone Simulator** (requires Xcode). Do not scan the QR code on a physical iPhone until Expo publishes SDK 56 to the App Store or you use a custom dev build.
 
 ## Quick start
 
@@ -24,7 +37,7 @@ npm install
 npx expo start
 ```
 
-Press **`i`** in the terminal to open the **iPhone Simulator** (requires Xcode).
+Press **`i`** in the terminal to open the **iPhone Simulator** (requires Xcode). **This is the supported path for SDK 56** — App Store Expo Go on a real iPhone will show “incompatible with this version”.
 
 ## Environment variables
 
@@ -89,6 +102,7 @@ Mobile auth sends `Authorization: Bearer <token>` to `/api/jobs`; web cookie aut
 
 ## Troubleshooting
 
+- **“Incompatible with this version” (Expo Go on iPhone)** — Expected with SDK 56 + App Store Expo Go. Press **`i`** for iPhone Simulator instead. See [docs/EXPO_SIMPLE.md](../docs/EXPO_SIMPLE.md).
 - **“Classification failed”** — Is `npm run dev` running on port 3000? Check `EXPO_PUBLIC_API_URL`.
 - **401 on dispatch** — Sign in on the Account tab first (real dispatch requires auth).
 - **Demo quotes only** — Expected when anonymous with Supabase configured; register to dispatch for real.
@@ -96,6 +110,20 @@ Mobile auth sends `Authorization: Bearer <token>` to `/api/jobs`; web cookie aut
 ## Expo GitHub + EAS cloud builds
 
 This app is linked to Expo project **`ec89741c-6973-4ab8-9047-6934e9e9f072`** (`owner`: `edmond808`, slug: `myfrai`) via `app.json` → `extra.eas.projectId`. The GitHub repo **Edmond808/myfr-ai** is connected on [expo.dev](https://expo.dev).
+
+### Non-dev: first cloud build
+
+```bash
+npm install --global eas-cli   # once per Mac
+eas login                      # sign in at expo.dev (required before any build)
+cd mobile
+npm install
+eas build --profile preview --platform ios
+```
+
+If `eas login` fails, create an account at [expo.dev/signup](https://expo.dev/signup) and ensure your Expo user owns project `myfrai` under account `edmond808`.
+
+Local dev is unchanged: `npx expo start` still works with Expo Go or the simulator — EAS is only for installable native builds.
 
 Because the Expo app lives in a **monorepo subdirectory**, cloud builds must use the **`mobile`** base directory (not the repo root).
 

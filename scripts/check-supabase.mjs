@@ -79,6 +79,17 @@ if (tierErr && /loyalty_tier|42703/i.test(tierErr.message + (tierErr.code || "")
   ok('column profiles.loyalty_tier exists');
 }
 
+// Check RLS helpers (migration 008 — fixes jobs/quotes infinite recursion)
+const { error: rlsErr } = await sb.rpc("is_job_customer", {
+  p_job_id: "00000000-0000-0000-0000-000000000000",
+});
+if (rlsErr && /could not find|does not exist|42883/i.test(rlsErr.message + (rlsErr.code || ""))) {
+  bad("RLS helper is_job_customer missing — run supabase/migrations/008_fix_jobs_quotes_rls_recursion.sql in the Supabase SQL editor");
+  fail = true;
+} else {
+  ok("RLS helper is_job_customer installed");
+}
+
 // Auth probe: signup should not return a database schema error
 const probeEmail = `probe-${Date.now()}@invalid.myfr.local`;
 const { error: authErr } = await sb.auth.signUp({

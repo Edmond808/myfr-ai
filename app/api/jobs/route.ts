@@ -1,4 +1,11 @@
 import { NextResponse } from "next/server";
+import {
+  DISPATCH_SCHEMA_HINT,
+  inlineDispatchJob,
+  isDispatchRecoverableError,
+  persistClassifiedJob,
+} from "@/lib/dispatch-job-fallback";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createRouteClient } from "@/lib/supabase/route-client";
 import { isSupabaseConfigured } from "@/lib/classify";
 import { CATEGORIES, URGENCIES, type JobClassification } from "@/lib/types";
@@ -59,49 +66,56 @@ export async function POST(request: Request) {
     }
 
     const since = new Date(Date.now() - 3600_000).toISOString();
-    const { count } = await supabase
+    const { count, error: countError } = await supabase
       .from("jobs")
       .select("id", { count: "exact", head: true })
       .eq("customer_id", user.id)
       .gte("created_at", since);
 
-    if ((count ?? 0) >= JOBS_PER_HOUR) {
+    if (countError) {
+      if (!/infinite recursion/i.test(countError.message)) {
+        throw new Error(countError.message);
+      }
+    } else if ((count ?? 0) >= JOBS_PER_HOUR) {
       return NextResponse.json({ error: "Rate limit" }, { status: 429 });
     }
 
-    const { data: job, error: jobError } = await supabase
-      .from("jobs")
-      .insert({
-        customer_id: user.id,
-        raw_request: rawRequest,
-        category: classification.category,
-        title: classification.title,
-        summary: classification.summary,
-        location: classification.location,
-        urgency: classification.urgency,
-        budget_estimate_eur: classification.budget_estimate_eur,
-        clarifying_question: classification.clarifying_question,
-        status: "classified",
-      })
-      .select("id")
-      .single();
+    const jobId = crypto.randomUUID();
+    const admin = createAdminClient();
+    await persistClassifiedJob(
+      supabase,
+      {
+        jobId,
+        userId: user.id,
+        rawRequest,
+        classification,
+      },
+      admin,
+    );
 
-    if (jobError || !job) {
-      throw new Error(jobError?.message ?? "Failed to create job");
-    }
-
-    const { data: dispatched, error: dispatchError } = await supabase.rpc(
+    let dispatched: number;
+    const { data: rpcCount, error: dispatchError } = await supabase.rpc(
       "dispatch_job",
-      { p_job_id: job.id },
+      { p_job_id: jobId },
     );
 
     if (dispatchError) {
-      throw new Error(dispatchError.message);
+      if (isDispatchRecoverableError(dispatchError.message)) {
+        if (admin) {
+          dispatched = await inlineDispatchJob(admin, jobId, classification);
+        } else {
+          throw new Error(DISPATCH_SCHEMA_HINT);
+        }
+      } else {
+        throw new Error(dispatchError.message);
+      }
+    } else {
+      dispatched = rpcCount ?? 0;
     }
 
     return NextResponse.json({
-      jobId: job.id,
-      dispatched: dispatched ?? 0,
+      jobId,
+      dispatched,
     });
   } catch (err) {
     return NextResponse.json(

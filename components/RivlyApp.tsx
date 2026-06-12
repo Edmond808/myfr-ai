@@ -14,6 +14,7 @@ import {
   DEMO_MERCHANTS,
 } from "@/lib/constants";
 import { sortQuotesRecommended } from "@/lib/quote-filters";
+import { normalizeJobCategory } from "@/lib/dispatch-job-fallback";
 import { normalizeLoyaltyTier } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
@@ -282,9 +283,10 @@ export function RivlyApp() {
   };
 
   const simulateDemoQuotes = (parsed: JobClassification) => {
-    const base = parsed.budget_estimate_eur || BASE_PRICE[parsed.category];
+    const category = normalizeJobCategory(parsed.category);
+    const base = parsed.budget_estimate_eur || BASE_PRICE[category];
     const merchants = sortQuotesRecommended(
-      DEMO_MERCHANTS[parsed.category].map((m) => ({
+      DEMO_MERCHANTS[category].map((m) => ({
         merchant: m,
         price: 0,
       })),
@@ -347,12 +349,26 @@ export function RivlyApp() {
     };
   };
 
+  const runDemoDispatch = (req: PendingRequest) => {
+    clearTimeouts();
+    channelCleanup.current?.();
+    channelCleanup.current = null;
+    setError(null);
+    setPendingRequest(req);
+    setJob({ ...req.classification, category: normalizeJobCategory(req.classification.category) });
+    setQuotes([]);
+    setAccepted(null);
+    setJobId(null);
+    setView("dispatch");
+    simulateDemoQuotes(req.classification);
+  };
+
   const completeDispatch = async (req: PendingRequest) => {
     setPendingRequest(req);
     setJob(req.classification);
     setQuotes([]);
     setAccepted(null);
-    setView("dispatch");
+    setError(null);
 
     if (isSupabaseConfigured()) {
       try {
@@ -360,6 +376,7 @@ export function RivlyApp() {
           rawRequest: req.text,
           classification: req.classification,
         });
+        setView("dispatch");
         setJobId(id);
 
         if (dispatched === 0) {
@@ -380,32 +397,25 @@ export function RivlyApp() {
           }
         }
       } catch (err) {
-        if (err instanceof ApiClientError && err.status === 401) {
-          startAnonymousDispatch(req);
+        if (err instanceof ApiClientError && err.status === 429) {
+          setError(t.home.dispatchError);
+          setView("home");
+          setJob(null);
+          setJobId(null);
+          setPendingRequest(null);
           return;
         }
-        setError(t.home.dispatchError);
-        setView("home");
-        setJob(null);
-        setJobId(null);
-        setPendingRequest(null);
+        // Real dispatch unavailable (RLS, schema, auth mismatch) — demo quotes still work.
+        runDemoDispatch(req);
       }
     } else {
+      setView("dispatch");
       simulateDemoQuotes(req.classification);
     }
   };
 
   const startAnonymousDispatch = (req: PendingRequest) => {
-    clearTimeouts();
-    channelCleanup.current?.();
-    channelCleanup.current = null;
-    setPendingRequest(req);
-    setJob(req.classification);
-    setQuotes([]);
-    setAccepted(null);
-    setJobId(null);
-    setView("dispatch");
-    simulateDemoQuotes(req.classification);
+    runDemoDispatch(req);
   };
 
   const savePendingAndNavigate = (
@@ -425,23 +435,30 @@ export function RivlyApp() {
   };
 
   const submit = async () => {
-    if (!text.trim() || loading) return;
+    const requestText = (text ?? "").trim();
+    if (!requestText || loading) return;
     setLoading(true);
     setError(null);
 
     try {
-      const parsed = await classifyRequestClient(text.trim(), location);
+      const parsed = await classifyRequestClient(requestText, location);
       const req: PendingRequest = {
-        text: text.trim(),
+        text: requestText,
         location,
         classification: parsed,
       };
 
       if (isSupabaseConfigured()) {
-        const supabase = createClient();
-        const { data } = await supabase.auth.getUser();
+        let authed = false;
+        try {
+          const supabase = createClient();
+          const { data } = await supabase.auth.getUser();
+          authed = Boolean(data.user);
+        } catch {
+          authed = false;
+        }
 
-        if (!data.user) {
+        if (!authed) {
           startAnonymousDispatch(req);
           return;
         }
@@ -452,6 +469,7 @@ export function RivlyApp() {
       }
     } catch {
       setError(t.home.dispatchError);
+      setView("home");
     } finally {
       setLoading(false);
     }

@@ -123,33 +123,46 @@ create policy "verified merchants visible" on merchants
 -- Jobs: customer sees own jobs
 create policy "customer jobs" on jobs
   for all using (auth.uid() = customer_id);
+
+-- Security-definer helpers avoid jobs <-> quotes RLS infinite recursion
+create or replace function is_job_customer(p_job_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from jobs
+    where id = p_job_id and customer_id = auth.uid()
+  );
+$$;
+
+create or replace function is_merchant_on_job(p_job_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from quotes q
+    join merchants m on m.id = q.merchant_id
+    where q.job_id = p_job_id and m.owner_id = auth.uid()
+  );
+$$;
+
 -- Merchants read jobs dispatched to them via pending/submitted quotes
 create policy "merchant reads dispatched jobs" on jobs
-  for select using (
-    exists (
-      select 1 from quotes q
-      join merchants m on m.id = q.merchant_id
-      where q.job_id = jobs.id and m.owner_id = auth.uid()
-    )
-  );
+  for select using (is_merchant_on_job(id));
 create policy "merchant updates dispatched job" on jobs
-  for update using (
-    exists (
-      select 1 from quotes q
-      join merchants m on m.id = q.merchant_id
-      where q.job_id = jobs.id and m.owner_id = auth.uid()
-    )
-  );
+  for update using (is_merchant_on_job(id));
 
 -- Quotes: customer sees quotes on own jobs; merchant sees/updates own quotes
 create policy "customer reads quotes" on quotes
-  for select using (
-    exists (select 1 from jobs where jobs.id = quotes.job_id and jobs.customer_id = auth.uid())
-  );
+  for select using (is_job_customer(job_id));
 create policy "customer accepts quotes" on quotes
-  for update using (
-    exists (select 1 from jobs where jobs.id = quotes.job_id and jobs.customer_id = auth.uid())
-  );
+  for update using (is_job_customer(job_id));
 create policy "merchant own quotes" on quotes
   for all using (
     exists (select 1 from merchants where merchants.id = quotes.merchant_id and merchants.owner_id = auth.uid())
@@ -178,10 +191,12 @@ where j.status in ('dispatched','quoted');
 -- Called server-side after classification: creates pending quotes
 -- for ALL verified merchants matching category + area (promoted first).
 create or replace function dispatch_job(p_job_id uuid)
-returns int language plpgsql security definer as $$
+returns int language plpgsql security definer set search_path = public as $$
 declare
   v_count int;
 begin
+  perform set_config('row_security', 'off', true);
+
   insert into quotes (job_id, merchant_id, status, expires_at)
   select p_job_id, m.id, 'pending', now() + interval '4 hours'
   from jobs j
