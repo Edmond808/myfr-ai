@@ -6,10 +6,14 @@ import { ChevronDown, LogOut } from "lucide-react";
 import { PALETTE } from "@/lib/constants";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
+import { LoyaltyBadge } from "./LoyaltyBadge";
+import type { LoyaltyTier } from "@/lib/types";
+
 interface UserMenuProps {
   displayName: string;
   initial: string;
   email?: string | null;
+  loyaltyTier?: LoyaltyTier;
   onLogout?: () => void;
 }
 
@@ -17,6 +21,7 @@ export function UserMenu({
   displayName,
   initial,
   email,
+  loyaltyTier = 0,
   onLogout,
 }: UserMenuProps) {
   const { t } = useLocale();
@@ -49,6 +54,7 @@ export function UserMenu({
         >
           {initial}
         </span>
+        {loyaltyTier > 0 && <LoyaltyBadge tier={loyaltyTier} size="sm" />}
         <span
           className="text-sm font-medium max-w-[100px] truncate hidden sm:inline"
           style={{ color: PALETTE.navy }}

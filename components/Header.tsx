@@ -7,11 +7,14 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PALETTE } from "@/lib/constants";
 import { BrandWordmark } from "./BrandWordmark";
 
+import type { LoyaltyTier } from "@/lib/types";
+
 interface HeaderProps {
   onReset: () => void;
   userEmail?: string | null;
   userDisplayName?: string | null;
   userInitial?: string | null;
+  loyaltyTier?: LoyaltyTier;
   onLogout?: () => void;
 }
 
@@ -20,6 +23,7 @@ export function Header({
   userEmail,
   userDisplayName,
   userInitial,
+  loyaltyTier = 0,
   onLogout,
 }: HeaderProps) {
   const { t } = useLocale();
@@ -40,6 +44,7 @@ export function Header({
             displayName={userDisplayName}
             initial={userInitial}
             email={userEmail}
+            loyaltyTier={loyaltyTier}
             onLogout={onLogout}
           />
         ) : (

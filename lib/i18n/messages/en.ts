@@ -70,6 +70,27 @@ export const messages = {
     authBannerRegister: "Register",
     authBannerSignIn: "Sign in",
   },
+  loyalty: {
+    clubName: "Riviera Club",
+    unlockTeaser: "Unlock Riviera Club prices — free to join",
+    signUpToUnlock: "Sign up to unlock",
+    firstBookingUnlock: "Complete your first booking to unlock Azur I member prices",
+    youSave: "You save €{amount} with {tier}",
+    memberPrice: "Member price",
+    listPrice: "List price",
+    priceLocked: "Member price locked",
+    progressTease: "{count} bookings until {tier}",
+    progressTeaseOne: "1 booking until {tier}",
+    perkGuest: "Join free to unlock member prices",
+    perkAzur: "Member prices + verified pros",
+    perkCote: "Priority dispatch + Azur perks",
+    perkPrestige: "Concierge line + best rates",
+    tierAzur: "Azur I",
+    tierCote: "Côte II",
+    tierPrestige: "Prestige III",
+    savingsApplied: "Riviera Club savings applied",
+    escrowMemberNote: "Member rate applied at checkout",
+  },
   urgency: {
     today: "Needed today",
     this_week: "This week",
@@ -156,6 +177,7 @@ export type Messages = {
   home: Record<string, string>;
   auth: Record<string, string>;
   dispatch: Record<string, string>;
+  loyalty: Record<string, string>;
   pro: Record<string, string>;
   urgency: Record<string, string>;
   categories: Record<string, string>;
