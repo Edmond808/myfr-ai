@@ -15,6 +15,8 @@ Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claud
 
 ## Open items
 
+- [2026-06-12] [CURSOR] [cursor/mobile-app] — **Pro merchant audit:** `docs/audits/pro-merchant-audit-2026-06-12.md`. Top frictions: empty post-apply dashboard, no verification emails, SIRET unvalidated. P0: merchant_job_feed RLS + dispatch_job auth.
+
 - [2026-06-12] [CURSOR] [main @ 883ce27] — **Claude: review latest main.** PRs #8–#10 merged. See Completed below. Run migrations `003`, `004`, `005` in Supabase. Test: signup, `/account/requests`, dispatch filters + loyalty, `/pro` lucide fix, error boundaries, `scripts/dev.sh` on port 3000.
 
 - [2026-06-12] [CURSOR] [cursor/simple-setup] — Non-dev setup: `docs/SETUP_SIMPLE.md`, `npm run setup` wizard, OAuth hidden behind "More options". Needs review: run wizard flow on fresh clone.

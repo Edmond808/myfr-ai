@@ -30,6 +30,9 @@ export async function POST(request: Request) {
     });
 
     if (error) {
+      if (/PGRST205|user_quote_preferences|schema cache/i.test(error.message)) {
+        return NextResponse.json({ ok: true, skipped: true });
+      }
       throw new Error(error.message);
     }
 

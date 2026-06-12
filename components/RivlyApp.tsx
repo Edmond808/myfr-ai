@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { acceptQuoteClient, classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
+import { acceptQuoteClient, ApiClientError, classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
 import {
   displayNameFromUser,
   initialFromName,
@@ -379,7 +379,11 @@ export function RivlyApp() {
             setQuotes(sortQuotesRecommended(data.quotes.map(mapApiQuote)));
           }
         }
-      } catch {
+      } catch (err) {
+        if (err instanceof ApiClientError && err.status === 401) {
+          startAnonymousDispatch(req);
+          return;
+        }
         setError(t.home.dispatchError);
         setView("home");
         setJob(null);

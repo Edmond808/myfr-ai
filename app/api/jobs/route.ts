@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createRouteClient } from "@/lib/supabase/route-client";
 import { isSupabaseConfigured } from "@/lib/classify";
 import { CATEGORIES, URGENCIES, type JobClassification } from "@/lib/types";
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = await createClient();
+  const supabase = await createRouteClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -132,7 +132,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ quotes: [], jobs: [] });
   }
 
-  const supabase = await createClient();
+  const supabase = await createRouteClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -236,7 +236,7 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const supabase = await createClient();
+  const supabase = await createRouteClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
