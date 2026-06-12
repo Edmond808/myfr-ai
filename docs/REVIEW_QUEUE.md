@@ -11,7 +11,7 @@
 
 Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claude may also use local `/Users/e808m/myfr.ai`). Before starting work: `git fetch origin && git pull origin main`. After pushing a branch, append a line here. Full loop: `docs/TEAM_WORKFLOW.md`.
 
-**Current sync:** main @ `0a1f915` — skills audit handoff + a11y/i18n fixes pushed. Claude: pull main, review `.cursor/SKILLS.md` and `docs/audits/`.
+**Current sync:** main @ `909dc76` — dual-workspace note + skills audit handoff. Claude: pull main, review `.cursor/SKILLS.md` and `docs/audits/`.
 
 ## Open items
 
@@ -23,13 +23,36 @@ Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claud
 
 - [2026-06-12] [CURSOR] [main] — **User action:** Enable branch protection on `main` (require CI + 1 review). See `docs/PR_REVIEW_AND_ROADMAP.md` Part 4.
 
+## Audits
+
+- [2026-06-12] [CURSOR] [cursor/mobile-app @ `0a1f915`] — **Parallel audit (5 lenses + synthesizer).** Branch identical to `main`; mobile scaffold untracked. **6 deduplicated P0**, 22 P1. Security P0s documented only (require migrations, not applied).
+  - [Master summary](./audits/parallel-audit-2026-06-12/master-summary.md)
+  - [Security](./audits/parallel-audit-2026-06-12/security.md) — P0:1 P1:4 P2:9
+  - [Customer journey](./audits/parallel-audit-2026-06-12/customer-journey.md) — P0:2 P1:6 P2:7
+  - [Pro journey](./audits/parallel-audit-2026-06-12/pro-journey.md) — P0:2 P1:10 P2:7
+  - [Data layer](./audits/parallel-audit-2026-06-12/data-layer.md) — P0:2 P1:9 P2:6
+  - [Mobile code review](./audits/parallel-audit-2026-06-12/code-review.md) — P0:1 P1:5 P2:7
+  - **Fix first:** migration `006` for `dispatch_job` + feed view; accept errors on dispatch; resume quote after auth; align `00_RUN_THIS_IN_SUPABASE.sql`; commit `mobile/`.
+
+- [2026-06-12] [CURSOR] [main] — **Security+auth audit:** [security-auth-audit-2026-06-12.md](./audits/security-auth-audit-2026-06-12.md) (P0=2, P1=5). Priority: harden `dispatch_job` RPC, merchant status guard, merchant PII view. Read-only; patches proposed, not applied.
+
+- [2026-06-12] [CURSOR] [main] — **i18n/copy audit:** [i18n-copy-review-2026-06-12.md](./audits/i18n-copy-review-2026-06-12.md) — 28 issues; **185/185 key parity**; hardcoded EN in `global-error`, API errors, RivlyApp ETA; FR anglicisms + dispatch jargon. Top fixes: `home.dispatchError`, `global-error.tsx`, `loyalty.signUpToUnlock`.
+
+- [2026-06-12] [CURSOR] [main] — **Classify→dispatch pipeline review** (playbook §3.3): [classify-dispatch-pipeline-review-2026-06-12.md](./audits/classify-dispatch-pipeline-review-2026-06-12.md). Top risks: `dispatch_job` RPC auth (P0), `/api/classify` rate limit (P1), client-trusted classification on POST /api/jobs (P1). `lib/classify.ts` flagged for human review only — no prompt edits.
+
+- [2026-06-12] [CURSOR] [main] — **Playbook audits** (§3.2–3.7; `.cursor/SKILLS.md`, `.cursor/AUDIT_PLAYBOOK.md`):
+  - [Pre-release browser QA](./audits/2026-06-12-browser-qa.md) — Cannes demo flow pass; analytics 500; `.next` corruption if build during dev
+  - [Security + auth](./audits/2026-06-12-security.md) — RPC/RLS gaps, `/api/classify` rate limit, auth boundary matrix
+  - [Performance](./audits/2026-06-12-performance.md)
+  - [Accessibility & i18n](./audits/2026-06-12-accessibility-i18n.md) — form labels, `format-eta` i18n, `LocaleProvider` `lang`, loyalty/dispatch a11y fixes applied in code
+
 ## Claude reviews
 
 - [2026-06-12] [CLAUDE] — Reviewed PRs #2/#3; handoff at `docs/PR_REVIEW_AND_ROADMAP.md`. Fixes A–E applied on `cursor/phase-3-oauth-journey` before merge.
 
 - [2026-06-12] [CLAUDE] — **Start here:** `git checkout main && git pull`. Main @ `883ce27` includes loyalty (#8), promoted quotes + filters (#9), signup/error-boundary/My-requests/dev.sh fixes (#10). Docs: `docs/LOYALTY.md`, `docs/PROMOTIONS.md`, `docs/SUPABASE_AUTH.md`.
 
-- [2026-06-12] [CURSOR] [main] — **Skills audit handoff.** `.cursor/SKILLS.md`, `.cursor/AUDIT_PLAYBOOK.md`, `docs/audits/2026-06-12-*.md` (security, performance, browser QA, a11y/i18n). Code fixes: form labels, `format-eta` i18n, `LocaleProvider` `lang`, loyalty/dispatch a11y. Review audit reports before next feature work.
+- [2026-06-12] [CURSOR] [main] — **Skills audit handoff.** `.cursor/SKILLS.md`, `.cursor/AUDIT_PLAYBOOK.md`. Code fixes from playbook audits applied (form labels, `format-eta` i18n, `LocaleProvider` `lang`, loyalty/dispatch a11y). See **Audits** above.
 
 ## Completed
 
