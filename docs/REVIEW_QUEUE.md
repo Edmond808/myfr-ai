@@ -18,6 +18,8 @@
 
 - [2026-06-12] [CLAUDE] — **Start here:** `git checkout main && git pull`. Main @ `883ce27` includes loyalty (#8), promoted quotes + filters (#9), signup/error-boundary/My-requests/dev.sh fixes (#10). Docs: `docs/LOYALTY.md`, `docs/PROMOTIONS.md`, `docs/SUPABASE_AUTH.md`.
 
+- [2026-06-12] [CURSOR] [main] — **Skills audit handoff.** `.cursor/SKILLS.md`, `.cursor/AUDIT_PLAYBOOK.md`, `docs/audits/2026-06-12-*.md` (security, performance, browser QA, a11y/i18n). Code fixes: form labels, `format-eta` i18n, `LocaleProvider` `lang`, loyalty/dispatch a11y. Review audit reports before next feature work.
+
 ## Completed
 
 - [2026-06-12] Initial Vite prototype migrated from Downloads JSX
