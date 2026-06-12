@@ -33,10 +33,13 @@ export interface Merchant {
   eta: string;
 }
 
+export type LoyaltyTier = 0 | 1 | 2 | 3;
+
 export interface Quote {
   id?: string;
   merchant: Merchant;
   price: number;
+  memberPrice?: number;
   message?: string | null;
   status?: string;
 }
@@ -57,6 +60,7 @@ export interface UserProfile {
   full_name: string | null;
   preferred_language: Locale;
   default_location: string;
+  loyalty_tier?: LoyaltyTier;
 }
 
 export type MerchantStatus = "applied" | "under_review" | "verified" | "suspended";

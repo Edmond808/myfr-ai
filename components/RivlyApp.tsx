@@ -12,11 +12,13 @@ import {
   BASE_PRICE,
   DEMO_MERCHANTS,
 } from "@/lib/constants";
+import { normalizeLoyaltyTier } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import type {
   Category,
   JobClassification,
+  LoyaltyTier,
   PendingRequest,
   PendingSession,
   Quote,
@@ -45,6 +47,7 @@ export function RivlyApp() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
   const [userInitial, setUserInitial] = useState<string | null>(null);
+  const [loyaltyTier, setLoyaltyTier] = useState<LoyaltyTier>(1);
   const [pendingRequest, setPendingRequest] = useState<PendingRequest | null>(null);
   const [acceptingQuoteId, setAcceptingQuoteId] = useState<string | null>(null);
   const [merchantCount, setMerchantCount] = useState(3);
@@ -82,6 +85,7 @@ export function RivlyApp() {
       setUserEmail(null);
       setUserDisplayName(null);
       setUserInitial(null);
+      setLoyaltyTier(1);
       return;
     }
 
@@ -89,7 +93,7 @@ export function RivlyApp() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("full_name, preferred_language")
+      .select("full_name, preferred_language, loyalty_tier")
       .eq("id", user.id)
       .single();
 
@@ -101,6 +105,7 @@ export function RivlyApp() {
     const name = displayNameFromUser(user, profile);
     setUserDisplayName(name);
     setUserInitial(initialFromName(name));
+    setLoyaltyTier(normalizeLoyaltyTier(profile?.loyalty_tier ?? 1));
   };
 
   useEffect(() => {
@@ -416,6 +421,7 @@ export function RivlyApp() {
     setUserEmail(null);
     setUserDisplayName(null);
     setUserInitial(null);
+    setLoyaltyTier(1);
   };
 
   return (
@@ -428,6 +434,7 @@ export function RivlyApp() {
           userEmail={userEmail}
           userDisplayName={userDisplayName}
           userInitial={userInitial}
+          loyaltyTier={loyaltyTier}
           onLogout={handleLogout}
         />
 
@@ -459,6 +466,8 @@ export function RivlyApp() {
             }
             onAuthRegister={() => savePendingAndNavigate("/auth/register")}
             onAuthSignIn={() => savePendingAndNavigate("/auth/login")}
+            loyaltyTier={loyaltyTier}
+            isLoggedIn={!!userEmail}
           />
         )}
       </div>

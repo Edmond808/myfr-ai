@@ -1,14 +1,17 @@
 "use client";
 
-import { ArrowLeft, BadgeCheck, Check, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Check, Clock, MapPin, Sparkles } from "lucide-react";
 import {
   BRAND,
   CATEGORY_ICONS,
   COMMISSION,
   PALETTE,
 } from "@/lib/constants";
+import { payPrice } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import type { JobClassification, Quote } from "@/lib/types";
+import type { JobClassification, LoyaltyTier, Quote } from "@/lib/types";
+import { LoyaltyBadge } from "./LoyaltyBadge";
+import { LoyaltyProgressTease, QuoteLoyaltyPrice } from "./QuoteLoyaltyPrice";
 import { Stars } from "./Stars";
 
 interface DispatchViewProps {
@@ -22,6 +25,9 @@ interface DispatchViewProps {
   showAuthBanner?: boolean;
   onAuthRegister?: () => void;
   onAuthSignIn?: () => void;
+  loyaltyTier?: LoyaltyTier;
+  isLoggedIn?: boolean;
+  completedBookings?: number;
 }
 
 export function DispatchView({
@@ -35,9 +41,21 @@ export function DispatchView({
   showAuthBanner,
   onAuthRegister,
   onAuthSignIn,
+  loyaltyTier = 1,
+  isLoggedIn = false,
+  completedBookings = 0,
 }: DispatchViewProps) {
   const { t } = useLocale();
   const CatIcon = CATEGORY_ICONS[job.category];
+  const effectiveTier = isLoggedIn ? loyaltyTier : 0;
+  const acceptedPayPrice =
+    accepted?.memberPrice ??
+    (accepted ? payPrice(accepted.price, effectiveTier, isLoggedIn) : 0);
+
+  const handleAccept = (quote: Quote) => {
+    const memberPrice = payPrice(quote.price, effectiveTier, isLoggedIn);
+    onAccept({ ...quote, memberPrice });
+  };
 
   return (
     <main className="max-w-3xl mx-auto px-6 pt-4 pb-20">
@@ -133,17 +151,28 @@ export function DispatchView({
             </p>
           )}
 
+          {isLoggedIn && (
+            <LoyaltyProgressTease
+              loyaltyTier={loyaltyTier}
+              completedBookings={completedBookings}
+            />
+          )}
+
           {showAuthBanner && (
             <div
               className="reveal reveal-d2 mb-4 rounded-2xl px-5 py-4 flex items-center justify-between gap-4 flex-wrap"
               style={{
-                background: PALETTE.navy,
+                background: `linear-gradient(135deg, ${PALETTE.navy} 0%, #1a4a6e 100%)`,
                 color: PALETTE.white,
               }}
             >
-              <p className="text-sm" style={{ fontWeight: 500 }}>
-                {t.dispatch.authBannerTitle}
-              </p>
+              <div className="flex items-start gap-3">
+                <Sparkles size={20} style={{ color: PALETTE.amber, marginTop: 2 }} />
+                <div>
+                  <p className="text-sm font-semibold">{t.loyalty.unlockTeaser}</p>
+                  <p className="text-xs mt-1 opacity-80">{t.dispatch.authBannerTitle}</p>
+                </div>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -204,21 +233,18 @@ export function DispatchView({
                   )}
                 </div>
                 {q.price ? (
-                  <div className="flex items-center gap-3">
-                    <span
-                      style={{
-                        fontFamily: "var(--font-fraunces), serif",
-                        fontSize: 24,
-                        fontWeight: 600,
-                      }}
-                    >
-                      €{q.price}
-                    </span>
+                  <div className="flex items-center gap-4 flex-wrap justify-end">
+                    <QuoteLoyaltyPrice
+                      listPrice={q.price}
+                      loyaltyTier={effectiveTier}
+                      isLoggedIn={isLoggedIn}
+                      onSignUp={onAuthRegister}
+                    />
                     <button
                       type="button"
-                      onClick={() => onAccept(q)}
+                      onClick={() => handleAccept(q)}
                       disabled={acceptingQuoteId === q.id}
-                      className="px-4 py-2 rounded-xl text-sm disabled:opacity-60"
+                      className="px-4 py-2 rounded-xl text-sm disabled:opacity-60 shrink-0"
                       style={{
                         background: PALETTE.navy,
                         color: PALETTE.white,
@@ -251,32 +277,46 @@ export function DispatchView({
       {accepted && (
         <div className="reveal glass-rivly mt-8 rounded-2xl p-6">
           <div
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-wrap"
             style={{ color: "#1F7A4D", fontWeight: 600 }}
           >
             <Check size={18} /> {t.dispatch.quoteAccepted}
+            {loyaltyTier > 0 && isLoggedIn && (
+              <LoyaltyBadge tier={loyaltyTier} size="sm" />
+            )}
           </div>
           <p className="mt-2 text-sm" style={{ color: "#3D6075" }}>
             {accepted.merchant.name} {t.dispatch.confirmedFor} &quot;{job.title}
             &quot;. {t.dispatch.escrowNote}
           </p>
+          {acceptedPayPrice < accepted.price && (
+            <p className="mt-2 text-xs font-medium" style={{ color: "#1F7A4D" }}>
+              {t.loyalty.savingsApplied} · {t.loyalty.escrowMemberNote}
+            </p>
+          )}
           <div
             className="mt-5 rounded-xl p-4 text-sm space-y-2"
             style={{ background: PALETTE.bg }}
           >
+            {acceptedPayPrice < accepted.price && (
+              <div className="flex justify-between" style={{ color: "#5C7E92" }}>
+                <span>{t.loyalty.listPrice}</span>
+                <span className="line-through">€{accepted.price}.00</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span>{t.dispatch.customerPays}</span>
-              <span style={{ fontWeight: 600 }}>€{accepted.price}.00</span>
+              <span style={{ fontWeight: 600 }}>€{acceptedPayPrice}.00</span>
             </div>
             <div className="flex justify-between" style={{ color: "#5C7E92" }}>
               <span>
                 {BRAND} {t.dispatch.commission} ({Math.round(COMMISSION * 100)}%)
               </span>
-              <span>€{(accepted.price * COMMISSION).toFixed(2)}</span>
+              <span>€{(acceptedPayPrice * COMMISSION).toFixed(2)}</span>
             </div>
             <div className="flex justify-between" style={{ color: "#5C7E92" }}>
               <span>{t.dispatch.merchantReceives}</span>
-              <span>€{(accepted.price * (1 - COMMISSION)).toFixed(2)}</span>
+              <span>€{(acceptedPayPrice * (1 - COMMISSION)).toFixed(2)}</span>
             </div>
           </div>
           <button
