@@ -2,6 +2,12 @@
 
 **My French Riviera** — AI-powered services marketplace for the Côte d'Azur.
 
+## New here? Start here
+
+**Not a developer?** Follow **[docs/SETUP_SIMPLE.md](docs/SETUP_SIMPLE.md)** — 3 steps, paste SQL once, copy one key, run `npm run setup`.
+
+Works in **demo mode** without Supabase — keyword classification and simulated quotes.
+
 ## Stack
 
 - **Next.js 15** App Router (deployable API routes)
@@ -9,17 +15,15 @@
 - **Tailwind CSS v4**
 - **Anthropic** server-side classification (`/api/classify`)
 
-## Quick start
+## Developers
 
 ```bash
 npm install
-cp .env.example .env.local   # add keys when ready
+cp .env.example .env.local   # or npm run setup
 npm run dev                  # http://localhost:3000
 ```
 
 For a full Supabase go-live walkthrough, see **[docs/SETUP_CHECKLIST.md](docs/SETUP_CHECKLIST.md)** (~15 min).
-
-Works in **demo mode** without Supabase or Anthropic keys — uses keyword classification and simulated quotes.
 
 ### Stale `.next` cache
 
@@ -67,8 +71,11 @@ components/         # RivlyApp, HomeView, DispatchView, LoadingSplash, auth form
 lib/                # classify, constants, i18n, supabase clients
 schema.sql                        # Source schema (also in supabase/ bundle)
 supabase/00_RUN_THIS_IN_SUPABASE.sql  # One-shot SQL for new projects
-docs/SETUP_CHECKLIST.md           # 15-min go-live walkthrough
+docs/SETUP_SIMPLE.md              # 3-step setup for non-devs
+docs/SETUP_CHECKLIST.md           # Full go-live walk-through
+scripts/setup-wizard.mjs          # npm run setup
 scripts/check-supabase.mjs        # npm run check:supabase
+scripts/dev.sh                    # install + dev server
 ```
 
 ## Phases completed

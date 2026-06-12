@@ -9,4 +9,5 @@ echo ""
 echo "Clearing .next cache (avoids stale webpack chunk errors)..."
 rm -rf .next
 
+npm install
 npm run dev

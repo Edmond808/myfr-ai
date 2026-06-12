@@ -43,6 +43,7 @@ function AppleIcon() {
 
 export function OAuthButtons({ next }: { next: string }) {
   const { t } = useLocale();
+  const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState<Provider | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +64,19 @@ export function OAuthButtons({ next }: { next: string }) {
       setLoading(null);
     }
   };
+
+  if (!expanded) {
+    return (
+      <button
+        type="button"
+        onClick={() => setExpanded(true)}
+        className="w-full py-2 text-sm font-medium underline-offset-2 hover:underline"
+        style={{ color: "#5C7E92" }}
+      >
+        {t.auth.moreOptions}
+      </button>
+    );
+  }
 
   return (
     <div className="space-y-3">
