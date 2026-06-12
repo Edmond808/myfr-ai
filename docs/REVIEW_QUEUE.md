@@ -13,7 +13,13 @@ Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claud
 
 **Current sync:** main @ `909dc76` — dual-workspace note + skills audit handoff. Claude: pull main, review `.cursor/SKILLS.md` and `docs/audits/`.
 
+## Pre-release QA
+
+- [2026-06-12] [CURSOR] [cursor/mobile-app] — Pre-release QA: build pass (isolated), demo classify OK, customer dispatch not completed (`.next` corruption under concurrent dev/build). Report: `docs/audits/pre-release-qa-cursor-mobile-app-2026-06-12.md`. P0: exclude `mobile/` from root tsconfig; never build while dev running.
+
 ## Open items
+
+- [2026-06-12] [CURSOR] [cursor/mobile-app / PR #12](https://github.com/Edmond808/myfr-ai/pull/12) — Dispatch RLS recursion workaround (admin persist + inline dispatch + demo fallback). **Still broken:** logged-in live dispatch until migration `008_fix_jobs_quotes_rls_recursion` applied in Supabase (+ `SUPABASE_SERVICE_ROLE_KEY` for admin path). Commits `91479ee`, `d15efbf`. Claude: review `lib/dispatch-job-fallback.ts`, `app/api/jobs/route.ts`, add migration 008 file if missing, test logged-in flow.
 
 - [2026-06-12] [CURSOR] [PR #11 / cursor/mobile-app] — **Merge-ready (CI green).** Expo mobile app + Bearer API auth + dispatch fallback + migration `006`. Babysat: excluded `mobile/` from root tsconfig (CI typecheck fix). No review comments yet. Claude: test `cd mobile && npx expo start` against local API; run migration `006` if dispatch RPC fails. **Verified locally:** `mobile/` `npm run typecheck` pass, `npx expo-doctor` 21/21; Expo SDK 56, tab nav (Home / Requests / Pro / Account), dispatch stack, auth screens. iPhone Simulator: `npx expo start` → press `i`.
 
