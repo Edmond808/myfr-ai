@@ -4,6 +4,8 @@
 
 ## Open items
 
+- [2026-06-12] [CURSOR] [cursor/promoted-quotes-filters] — Sponsored top placement, show all matching pros, quote filter bar + analytics. Run `supabase/migrations/004_promoted_and_analytics.sql`. See `docs/PROMOTIONS.md`. Needs review: filter/sort UX, sponsored badge, demo 7 merchants/category.
+
 - [2026-06-12] [CURSOR] [cursor/riviera-club-loyalty] — Riviera Club loyalty UX on dispatch quotes: strikethrough + member price, tier badges (Azur I / Côte II / Prestige III), savings pill, anonymous teaser, escrow member price. Run `supabase/migrations/003_loyalty_tier.sql`. Needs review: anonymous quote cards, logged-in tier badge in header, accepted escrow breakdown.
 
 - [2026-06-12] [CURSOR] [cursor/auth-after-quotes] — Anonymous users see demo quotes before auth; dispatch banner + accept-quote gate; logged-in flow unchanged. Needs review: submit logged out → quotes → register → real dispatch.

@@ -12,6 +12,7 @@ import {
   BASE_PRICE,
   DEMO_MERCHANTS,
 } from "@/lib/constants";
+import { sortQuotesRecommended } from "@/lib/quote-filters";
 import { normalizeLoyaltyTier } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
@@ -50,7 +51,7 @@ export function RivlyApp() {
   const [loyaltyTier, setLoyaltyTier] = useState<LoyaltyTier>(1);
   const [pendingRequest, setPendingRequest] = useState<PendingRequest | null>(null);
   const [acceptingQuoteId, setAcceptingQuoteId] = useState<string | null>(null);
-  const [merchantCount, setMerchantCount] = useState(3);
+  const [merchantCount, setMerchantCount] = useState(0);
   const isAnonymousSession = isSupabaseConfigured() && !userEmail;
   const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
   const channelCleanup = useRef<(() => void) | null>(null);
@@ -158,9 +159,54 @@ export function RivlyApp() {
     timeouts.current = [];
   };
 
+  type ApiQuote = {
+    id: string;
+    price_eur: number | null;
+    message: string | null;
+    status: string;
+    merchant: {
+      id: string;
+      business_name: string;
+      rating: number;
+      jobs_completed: number;
+      is_promoted?: boolean;
+      promotion_rank?: number;
+      promotion_expires_at?: string | null;
+    };
+  };
+
+  const mapApiQuote = (q: ApiQuote): Quote => {
+    const promotedActive =
+      Boolean(q.merchant.is_promoted) &&
+      (!q.merchant.promotion_expires_at ||
+        new Date(q.merchant.promotion_expires_at) > new Date());
+
+    return {
+      id: q.id,
+      price: q.price_eur ? Number(q.price_eur) : 0,
+      message: q.message,
+      status: q.status,
+      merchant: {
+        id: q.merchant.id,
+        name: q.merchant.business_name,
+        rating: Number(q.merchant.rating),
+        jobs: q.merchant.jobs_completed,
+        eta: q.status === "pending" ? "Awaiting quote" : "Quoted",
+        isPromoted: promotedActive,
+        promotionRank: q.merchant.promotion_rank ?? 0,
+      },
+    };
+  };
+
   const simulateDemoQuotes = (parsed: JobClassification) => {
     const base = parsed.budget_estimate_eur || BASE_PRICE[parsed.category];
-    const merchants = DEMO_MERCHANTS[parsed.category];
+    const merchants = sortQuotesRecommended(
+      DEMO_MERCHANTS[parsed.category].map((m) => ({
+        merchant: m,
+        price: 0,
+      })),
+    ).map((q) => q.merchant);
+
     setMerchantCount(merchants.length);
     setQuotes(
       merchants.map((m) => ({
@@ -169,9 +215,10 @@ export function RivlyApp() {
       })),
     );
 
-    [1600, 3400, 5200].forEach((delay, idx) => {
+    merchants.forEach((m, idx) => {
+      const delay = 1200 + idx * 900;
+      const variance = 0.88 + (idx % 5) * 0.04;
       const tId = setTimeout(() => {
-        const variance = [1.0, 0.92, 1.08][idx];
         setQuotes((prev) => {
           const next = [...prev];
           if (next[idx]) {
@@ -204,37 +251,10 @@ export function RivlyApp() {
         async () => {
           const res = await fetch(`/api/jobs?jobId=${id}`);
           if (!res.ok) return;
-          const data = (await res.json()) as {
-            quotes: {
-              id: string;
-              price_eur: number | null;
-              message: string | null;
-              status: string;
-              merchant: {
-                id: string;
-                business_name: string;
-                rating: number;
-                jobs_completed: number;
-              };
-            }[];
-          };
+          const data = (await res.json()) as { quotes: ApiQuote[] };
 
           setMerchantCount(data.quotes.length);
-          setQuotes(
-            data.quotes.map((q) => ({
-              id: q.id,
-              price: q.price_eur ? Number(q.price_eur) : 0,
-              message: q.message,
-              status: q.status,
-              merchant: {
-                id: q.merchant.id,
-                name: q.merchant.business_name,
-                rating: Number(q.merchant.rating),
-                jobs: q.merchant.jobs_completed,
-                eta: q.status === "pending" ? "Awaiting quote" : "Quoted",
-              },
-            })),
-          );
+          setQuotes(sortQuotesRecommended(data.quotes.map(mapApiQuote)));
         },
       )
       .subscribe();
@@ -273,34 +293,7 @@ export function RivlyApp() {
         if (res.ok) {
           const data = await res.json();
           if (data.quotes?.length) {
-            setQuotes(
-              data.quotes.map(
-                (q: {
-                  id: string;
-                  price_eur: number | null;
-                  message: string | null;
-                  status: string;
-                  merchant: {
-                    id: string;
-                    business_name: string;
-                    rating: number;
-                    jobs_completed: number;
-                  };
-                }) => ({
-                  id: q.id,
-                  price: q.price_eur ? Number(q.price_eur) : 0,
-                  message: q.message,
-                  status: q.status,
-                  merchant: {
-                    id: q.merchant.id,
-                    name: q.merchant.business_name,
-                    rating: Number(q.merchant.rating),
-                    jobs: q.merchant.jobs_completed,
-                    eta: q.status === "pending" ? "Awaiting quote" : "Quoted",
-                  },
-                }),
-              ),
-            );
+            setQuotes(sortQuotesRecommended(data.quotes.map(mapApiQuote)));
           }
         }
       } catch {
@@ -455,6 +448,7 @@ export function RivlyApp() {
         {view === "dispatch" && job && (
           <DispatchView
             job={job}
+            jobId={jobId}
             quotes={quotes}
             accepted={accepted}
             merchantCount={merchantCount}

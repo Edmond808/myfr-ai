@@ -31,6 +31,9 @@ export interface Merchant {
   rating: number;
   jobs: number;
   eta: string;
+  isPromoted?: boolean;
+  promotionRank?: number;
+  responseMinutes?: number;
 }
 
 export type LoyaltyTier = 0 | 1 | 2 | 3;
@@ -90,6 +93,9 @@ export interface MerchantRecord {
   email: string | null;
   rating: number;
   jobs_completed: number;
+  is_promoted?: boolean;
+  promotion_rank?: number;
+  promotion_expires_at?: string | null;
   created_at: string;
 }
 
