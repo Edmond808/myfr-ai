@@ -275,11 +275,119 @@ body {
   .reveal,
   .pop-in,
   .sheen-cta::after,
-  .sonar-dot {
+  .sonar-dot,
+  .brand-wordmark-animated .brand-segment,
+  .splash-brand {
     animation: none !important;
   }
 
   .lift-hover:hover {
     transform: none;
   }
+}
+
+/* ── Entry splash — tricolor wordmark gateway ── */
+
+@keyframes splash-letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes splash-brand-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brand-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.brand-my {
+  color: #002395;
+}
+
+.brand-fr {
+  color: #ffffff;
+  paint-order: stroke fill;
+}
+
+.brand-ai {
+  color: #ed2939;
+}
+
+.brand-wordmark-animated .brand-my {
+  animation: splash-letter-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.brand-wordmark-animated .brand-fr {
+  animation: splash-letter-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.brand-wordmark-animated .brand-ai {
+  animation: splash-letter-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+
+.splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(43, 134, 188, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 60% at 100% 50%, rgba(226, 153, 47, 0.14) 0%, transparent 50%),
+    linear-gradient(165deg, #dceaf2 0%, #c5dde9 38%, #b8d4e3 62%, #d4e8f0 100%);
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.splash-overlay[data-phase="exit"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: splash-brand-in 0.5s ease 0.45s both;
+}
+
+.splash-overlay[data-reduced-motion="true"] .splash-brand {
+  opacity: 1;
+  transform: none;
+}
+
+.splash-overlay[data-reduced-motion="true"] .brand-segment {
+  opacity: 1;
+  transform: none;
+}
+
+.splash-tagline {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.splash-wordmark-size {
+  font-size: clamp(2rem, 6vw, 2.625rem) !important;
 }

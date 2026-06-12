@@ -1,6 +1,6 @@
-# Supabase Auth — Rivly
+# Supabase Auth — myfr.ai
 
-Rivly uses Supabase Auth for email/password and OAuth (Google, Apple). Provider credentials are configured in the **Supabase Dashboard** — no extra env vars are required in the app beyond `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+myfr.ai uses Supabase Auth for email/password and OAuth (Google, Apple). Provider credentials are configured in the **Supabase Dashboard** — no extra env vars are required in the app beyond `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 
 ## Redirect URLs
 
@@ -41,19 +41,19 @@ Apple requires an [Apple Developer](https://developer.apple.com) account.
    - Team ID
    - Key ID
    - Private key (contents of `.p8`)
-4. Apple only returns the user's name on the **first** sign-in; Rivly syncs `full_name` from OAuth metadata in `/auth/callback` and `syncProfileFromAuth`.
+4. Apple only returns the user's name on the **first** sign-in; myfr.ai syncs `full_name` from OAuth metadata in `/auth/callback` and `syncProfileFromAuth`.
 
 ## Profile sync
 
-After OAuth or password login, Rivly:
+After OAuth or password login, myfr.ai:
 
 - Fills `profiles.full_name` from provider metadata if empty.
 - Sets `profiles.preferred_language` from metadata/locale if missing.
-- Stores locale in `localStorage` (`rivly-locale`) for the i18n provider.
+- Stores locale in `localStorage` (`myfr-locale`) for the i18n provider.
 
 ## Pending dispatch resume
 
-If a user classifies a request while logged out, the pending payload is stored in `sessionStorage` (`rivly-pending`). After login/OAuth, redirect to `/?resume=dispatch` to auto-dispatch.
+If a user classifies a request while logged out, the pending payload is stored in `sessionStorage` (`myfr-pending`). After login/OAuth, redirect to `/?resume=dispatch` to auto-dispatch.
 
 ## Schema requirement for quote acceptance
 

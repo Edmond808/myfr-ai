@@ -1,6 +1,6 @@
-# Rivly / myfr.ai
+# myfr.ai
 
-AI-powered services marketplace for the French Riviera.
+**My French Riviera** — AI-powered services marketplace for the Côte d'Azur.
 
 ## Stack
 
@@ -18,6 +18,10 @@ npm run dev            # http://localhost:3000
 ```
 
 Works in **demo mode** without Supabase or Anthropic keys — uses keyword classification and simulated quotes.
+
+### Stale `.next` cache
+
+If dev shows `Cannot find module './NNN.js'` in `.next/server/webpack-runtime.js`, kill the dev server, run `rm -rf .next`, then `npm run dev:clean` (or `./scripts/dev.sh`, which clears the cache automatically).
 
 ## Supabase setup (Phase 2)
 
@@ -55,7 +59,7 @@ app/
   api/jobs/         # Persist job + dispatch_job RPC + fetch quotes
   api/profile/      # User profile CRUD
   auth/             # Login, register, OAuth callback
-components/         # RivlyApp, HomeView, DispatchView, auth forms
+components/         # RivlyApp, HomeView, DispatchView, LoadingSplash, auth forms
 lib/                # classify, constants, i18n, supabase clients
 schema.sql          # Full Supabase schema + RLS + dispatch_job()
 ```

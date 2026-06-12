@@ -1,12 +1,12 @@
-# Rivly — Agent Instructions
+# myfr.ai — Agent Instructions
 
-Rivly is an AI-powered services marketplace prototype for the French Riviera (Côte d'Azur).
+**myfr.ai** (My French Riviera) is an AI-powered services marketplace prototype for the Côte d'Azur.
 
 ## Project structure
 
 ```
 app/
-  page.tsx              # Customer home (RivlyApp)
+  page.tsx              # Customer home (AppWithSplash → RivlyApp)
   pro/                  # Merchant signup + dashboard
   auth/                 # Login / register
   api/
@@ -14,7 +14,7 @@ app/
     jobs/               # Job persistence + quote fetch
     merchants/          # Merchant apply, feed, quote submit
 components/
-  RivlyApp, HomeView, DispatchView, Header, Stars
+  RivlyApp, HomeView, DispatchView, LoadingSplash, Header, Stars
   auth/                 # LoginForm, RegisterForm, AuthLayout
   pro/                  # MerchantSignupForm, MerchantDashboard
 lib/
@@ -38,7 +38,7 @@ scripts/
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173
+npm run dev          # http://localhost:3000
 ```
 
 Copy `.env.example` → `.env.local`:
@@ -69,6 +69,7 @@ Two workspaces share this git repo:
 ### What to preserve
 
 - Brand palette in `lib/constants.ts` (navy `#10324A`, azure `#2B86BC`, amber `#E2992F`)
+- Brand name `myfr.ai` in `BRAND` constant and i18n `brand` field
 - Fraunces + Inter typography
 - Never expose API keys in client code — all AI calls go through `app/api/classify`
 

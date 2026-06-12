@@ -1,6 +1,6 @@
 # Dual-team workflow
 
-Rivly uses two local workspaces so Cursor and Claude can work in parallel and review each other's code.
+myfr.ai uses two local workspaces so Cursor and Claude can work in parallel and review each other's code.
 
 ## Workspaces
 

@@ -1,4 +1,5 @@
 import { Fraunces, Inter } from "next/font/google";
+import { BRAND, BRAND_TAGLINE } from "@/lib/constants";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import "./globals.css";
 
@@ -15,8 +16,9 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Rivly — French Riviera Services",
-  description: "AI-powered services marketplace for the Côte d'Azur",
+  title: `${BRAND} — ${BRAND_TAGLINE}`,
+  description:
+    "myfr.ai — AI-powered services marketplace for the French Riviera (Côte d'Azur)",
 };
 
 export default function RootLayout({
