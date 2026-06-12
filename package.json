@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check:supabase": "node scripts/check-supabase.mjs"
+    "check:supabase": "node scripts/check-supabase.mjs",
+    "setup": "node scripts/setup-wizard.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

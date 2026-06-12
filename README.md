@@ -2,6 +2,12 @@
 
 AI-powered services marketplace for the French Riviera.
 
+## New here? Start here
+
+**Not a developer?** Follow **[docs/SETUP_SIMPLE.md](docs/SETUP_SIMPLE.md)** — 3 steps, paste SQL once, copy one key, run `npm run setup`.
+
+Works in **demo mode** without Supabase — keyword classification and simulated quotes.
+
 ## Stack
 
 - **Next.js 15** App Router (deployable API routes)
@@ -9,27 +15,15 @@ AI-powered services marketplace for the French Riviera.
 - **Tailwind CSS v4**
 - **Anthropic** server-side classification (`/api/classify`)
 
-## Quick start
+## Developers
 
 ```bash
 npm install
-cp .env.example .env.local   # add keys when ready
+cp .env.example .env.local   # or npm run setup
 npm run dev                  # http://localhost:3000
 ```
 
-For a full Supabase go-live walkthrough, see **[docs/SETUP_CHECKLIST.md](docs/SETUP_CHECKLIST.md)** (~15 min).
-
-Works in **demo mode** without Supabase or Anthropic keys — uses keyword classification and simulated quotes.
-
-## Supabase setup (Phase 2)
-
-Follow **[docs/SETUP_CHECKLIST.md](docs/SETUP_CHECKLIST.md)** — or the short version:
-
-1. Create project in **EU region** (Frankfurt or Paris)
-2. Run [`supabase/00_RUN_THIS_IN_SUPABASE.sql`](supabase/00_RUN_THIS_IN_SUPABASE.sql) in SQL Editor
-3. Enable Auth: email + password (Google optional)
-4. Enable Realtime on `quotes` table
-5. Copy `.env.example` → `.env.local`, add keys, then `npm run check:supabase`
+Full Supabase walkthrough: **[docs/SETUP_CHECKLIST.md](docs/SETUP_CHECKLIST.md)** (~15 min).
 
 ## Auth flow
 
@@ -63,8 +57,11 @@ components/         # RivlyApp, HomeView, DispatchView, auth forms
 lib/                # classify, constants, i18n, supabase clients
 schema.sql                        # Source schema (also in supabase/ bundle)
 supabase/00_RUN_THIS_IN_SUPABASE.sql  # One-shot SQL for new projects
-docs/SETUP_CHECKLIST.md           # 15-min go-live walkthrough
+docs/SETUP_SIMPLE.md              # 3-step setup for non-devs
+docs/SETUP_CHECKLIST.md           # Full go-live walkthrough
+scripts/setup-wizard.mjs          # npm run setup
 scripts/check-supabase.mjs        # npm run check:supabase
+scripts/dev.sh                    # install + dev server
 ```
 
 ## Phases completed

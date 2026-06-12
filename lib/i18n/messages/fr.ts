@@ -40,6 +40,7 @@ export const messages: Messages = {
     defaultLocation: "Ville par défaut",
     continueWithGoogle: "Continuer avec Google",
     continueWithApple: "Continuer avec Apple",
+    moreOptions: "Autres options de connexion",
     orEmail: "ou continuer avec l'e-mail",
     oauthError: "Impossible de démarrer la connexion. Réessayez.",
     oauthRedirecting: "Redirection…",

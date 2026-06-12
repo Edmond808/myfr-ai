@@ -37,6 +37,7 @@ export const messages = {
     defaultLocation: "Default city",
     continueWithGoogle: "Continue with Google",
     continueWithApple: "Continue with Apple",
+    moreOptions: "More sign-in options",
     orEmail: "or continue with email",
     oauthError: "Could not start sign-in. Try again.",
     oauthRedirecting: "Redirecting…",
