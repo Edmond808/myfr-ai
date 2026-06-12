@@ -68,6 +68,28 @@ export interface UserProfile {
 
 export type MerchantStatus = "applied" | "under_review" | "verified" | "suspended";
 
+export type JobStatus =
+  | "submitted"
+  | "classified"
+  | "dispatched"
+  | "quoted"
+  | "accepted"
+  | "in_progress"
+  | "completed"
+  | "disputed"
+  | "cancelled";
+
+export interface CustomerJobListItem {
+  id: string;
+  title: string;
+  location: string;
+  category: Category;
+  status: JobStatus;
+  created_at: string;
+  quotes_total: number;
+  quotes_submitted: number;
+}
+
 export const URGENCIES: Urgency[] = ["today", "this_week", "flexible"];
 
 export const CATEGORIES: Category[] = [

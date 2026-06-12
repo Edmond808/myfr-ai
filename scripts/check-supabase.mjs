@@ -68,6 +68,35 @@ if (dErr && /could not find|does not exist|42883/i.test(dErr.message + (dErr.cod
   ok("RPC dispatch_job installed");
 }
 
+// Check loyalty_tier column (migration 003)
+const { error: tierErr } = await sb.from("profiles").select("loyalty_tier").limit(1);
+if (tierErr && /loyalty_tier|42703/i.test(tierErr.message + (tierErr.code || ""))) {
+  bad('column profiles.loyalty_tier missing — run supabase/migrations/003_loyalty_tier.sql');
+  fail = true;
+} else if (tierErr && tierErr.code === "42P01") {
+  /* table missing — already reported */
+} else {
+  ok('column profiles.loyalty_tier exists');
+}
+
+// Auth probe: signup should not return a database schema error
+const probeEmail = `probe-${Date.now()}@invalid.myfr.local`;
+const { error: authErr } = await sb.auth.signUp({
+  email: probeEmail,
+  password: "ProbePass123!",
+  options: { data: { full_name: "Probe" } },
+});
+if (authErr && /database error (finding user|querying schema)/i.test(authErr.message)) {
+  bad(`auth signup broken (${authErr.message}) — run supabase/migrations/005_fix_handle_new_user.sql and scripts/fix-broken-auth-user.sql if one email is stuck`);
+  fail = true;
+} else if (authErr && authErr.code === "over_email_send_rate_limit") {
+  ok("auth signup reachable (email rate limit OK)");
+} else if (authErr) {
+  ok(`auth signup reachable (${authErr.code ?? authErr.message})`);
+} else {
+  ok("auth signup OK");
+}
+
 console.log();
 if (fail) {
   console.log("\x1b[31mSome checks failed — see above.\x1b[0m\n");

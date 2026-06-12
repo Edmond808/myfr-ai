@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Locale } from "@/lib/types";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
+import { formatAuthError, type AuthMessages } from "@/lib/auth/errors";
 
 export function RegisterForm() {
   const { t, locale, setLocale } = useLocale();
@@ -48,7 +49,10 @@ export function RegisterForm() {
     });
 
     if (signUpError) {
-      setError(t.auth.registerError);
+      if (process.env.NODE_ENV === "development") {
+        console.error("[RegisterForm] signUp failed:", signUpError);
+      }
+      setError(formatAuthError(signUpError, t.auth as AuthMessages, "register"));
       setLoading(false);
       return;
     }

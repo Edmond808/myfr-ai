@@ -36,6 +36,7 @@ create table profiles (
   phone text,
   preferred_language text default 'en',
   default_location text default 'Cannes',
+  loyalty_tier smallint not null default 0 check (loyalty_tier >= 0 and loyalty_tier <= 3),
   created_at timestamptz default now()
 );
 
@@ -217,13 +218,20 @@ end $$;
 create or replace function handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, full_name, preferred_language)
+  insert into public.profiles (
+    id, full_name, preferred_language, default_location, loyalty_tier
+  )
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'full_name', ''),
-    coalesce(new.raw_user_meta_data->>'preferred_language', 'en')
+    coalesce(new.raw_user_meta_data->>'preferred_language', 'en'),
+    coalesce(new.raw_user_meta_data->>'default_location', 'Cannes'),
+    0
   )
   on conflict (id) do nothing;
+  return new;
+exception when others then
+  raise warning 'handle_new_user failed for %: %', new.id, sqlerrm;
   return new;
 end;
 $$;

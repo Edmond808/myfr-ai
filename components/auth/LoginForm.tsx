@@ -8,6 +8,7 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient } from "@/lib/supabase/client";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
+import { formatAuthError, type AuthMessages } from "@/lib/auth/errors";
 import { syncProfileFromAuth } from "@/lib/auth/profile-sync";
 
 export function LoginForm() {
@@ -33,7 +34,10 @@ export function LoginForm() {
     });
 
     if (signInError) {
-      setError(t.auth.loginError);
+      if (process.env.NODE_ENV === "development") {
+        console.error("[LoginForm] signIn failed:", signInError);
+      }
+      setError(formatAuthError(signInError, t.auth as AuthMessages, "login"));
       setLoading(false);
       return;
     }

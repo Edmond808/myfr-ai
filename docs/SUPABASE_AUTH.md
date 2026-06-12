@@ -58,3 +58,27 @@ If a user classifies a request while logged out, the pending payload is stored i
 ## Schema requirement for quote acceptance
 
 Run the `customer accepts quotes` RLS policy from `schema.sql` so customers can update quote status via the authenticated API route (`PATCH /api/jobs`).
+
+## Migrations (run in order if upgrading an existing project)
+
+| File | Purpose |
+|------|---------|
+| `supabase/migrations/003_loyalty_tier.sql` | Adds `profiles.loyalty_tier` |
+| `supabase/migrations/004_promoted_and_analytics.sql` | Promoted merchants + quote filter analytics |
+| `supabase/migrations/005_fix_handle_new_user.sql` | Hardens signup trigger so profile errors never block auth |
+
+Fresh installs: run `supabase/00_RUN_THIS_IN_SUPABASE.sql` (includes the hardened trigger).
+
+## Troubleshooting signup
+
+### "Could not create account" / "Database error finding user"
+
+Usually a **corrupted `auth.users` row** for that email (often from manual SQL or a failed Dashboard "Add user"). New emails work; one stuck email fails with HTTP 500.
+
+1. In **Supabase → SQL Editor**, run `scripts/fix-broken-auth-user.sql` (edit the email if needed).
+2. Run `supabase/migrations/005_fix_handle_new_user.sql` so future profile errors cannot block signup.
+3. Register again at `/auth/register`.
+
+In local dev, the register form logs the raw Supabase error to the browser console.
+
+Verify with `npm run check:supabase` — it probes auth signup and checks `loyalty_tier`.

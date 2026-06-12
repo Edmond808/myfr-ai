@@ -78,6 +78,15 @@ export function UserMenu({
             </p>
           )}
           <Link
+            href="/account/requests"
+            role="menuitem"
+            className="block px-4 py-2 text-sm hover:bg-white/40"
+            style={{ color: PALETTE.navy }}
+            onClick={() => setOpen(false)}
+          >
+            {t.requests.title}
+          </Link>
+          <Link
             href="/pro"
             role="menuitem"
             className="block px-4 py-2 text-sm hover:bg-white/40"
