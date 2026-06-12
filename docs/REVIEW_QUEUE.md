@@ -42,7 +42,7 @@ Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claud
 
 **Cursor attempted fix (commits `91479ee`, `d15efbf` on `cursor/mobile-app`):** admin persist + inline dispatch on recursion; client demo fallback. **Still not verified** with real Supabase + both test accounts.
 
-**Migration gap:** Code references `supabase/migrations/008_fix_jobs_quotes_rls_recursion.sql` but **file does not exist** — SQL is in `schema.sql` only. Claude must create migration `008` from `schema.sql` diff and run in Supabase SQL editor.
+**Migration 008:** `supabase/migrations/008_fix_jobs_quotes_rls_recursion.sql` added on branch — still must run in Supabase SQL editor on shared project.
 
 ### Exact test case
 
@@ -90,7 +90,7 @@ Actual:   Dispatch fails or demo fallback; pro feed empty
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [cursor/mobile-app / PR #12](https://github.com/Edmond808/myfr-ai/pull/12) — Dispatch RLS recursion workaround (admin persist + inline dispatch + demo fallback). **Still broken:** logged-in live dispatch until migration `008_fix_jobs_quotes_rls_recursion` applied in Supabase (+ `SUPABASE_SERVICE_ROLE_KEY` for admin path). Commits `91479ee`, `d15efbf`. Claude: review `lib/dispatch-job-fallback.ts`, `app/api/jobs/route.ts`, add migration 008 file if missing, test logged-in flow.
+- [2026-06-12] [CURSOR] [cursor/mobile-app / PR #12](https://github.com/Edmond808/myfr-ai/pull/12) — Dispatch RLS recursion workaround (admin persist + inline dispatch + demo fallback). **Still broken:** logged-in live dispatch until migration `008_fix_jobs_quotes_rls_recursion` applied in Supabase (+ `SUPABASE_SERVICE_ROLE_KEY` for admin path). Commits `91479ee`, `d15efbf`. Claude: review `lib/dispatch-job-fallback.ts`, `app/api/jobs/route.ts`, migration 008 file committed — apply in Supabase SQL editor, then test logged-in flow.
 
 - [2026-06-12] [CURSOR] [PR #11 / cursor/mobile-app] — **Merge-ready (CI green).** Expo mobile app + Bearer API auth + dispatch fallback + migration `006`. Babysat: excluded `mobile/` from root tsconfig (CI typecheck fix). No review comments yet. Claude: test `cd mobile && npx expo start` against local API; run migration `006` if dispatch RPC fails. **Verified locally:** `mobile/` `npm run typecheck` pass, `npx expo-doctor` 21/21; Expo SDK 56, tab nav (Home / Requests / Pro / Account), dispatch stack, auth screens. iPhone Simulator: `npx expo start` → press `i`.
 
