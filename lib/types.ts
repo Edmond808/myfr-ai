@@ -47,6 +47,11 @@ export interface PendingRequest {
   classification: JobClassification;
 }
 
+export interface PendingSession {
+  request: PendingRequest;
+  quote?: Quote;
+}
+
 export interface UserProfile {
   id: string;
   full_name: string | null;

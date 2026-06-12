@@ -19,6 +19,9 @@ interface DispatchViewProps {
   onReset: () => void;
   onAccept: (quote: Quote) => void;
   acceptingQuoteId?: string | null;
+  showAuthBanner?: boolean;
+  onAuthRegister?: () => void;
+  onAuthSignIn?: () => void;
 }
 
 export function DispatchView({
@@ -29,6 +32,9 @@ export function DispatchView({
   onReset,
   onAccept,
   acceptingQuoteId,
+  showAuthBanner,
+  onAuthRegister,
+  onAuthSignIn,
 }: DispatchViewProps) {
   const { t } = useLocale();
   const CatIcon = CATEGORY_ICONS[job.category];
@@ -125,6 +131,46 @@ export function DispatchView({
             <p className="text-sm mb-4" style={{ color: "#5C7E92" }}>
               {t.dispatch.noMerchantsYet}
             </p>
+          )}
+
+          {showAuthBanner && (
+            <div
+              className="reveal reveal-d2 mb-4 rounded-2xl px-5 py-4 flex items-center justify-between gap-4 flex-wrap"
+              style={{
+                background: PALETTE.navy,
+                color: PALETTE.white,
+              }}
+            >
+              <p className="text-sm" style={{ fontWeight: 500 }}>
+                {t.dispatch.authBannerTitle}
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onAuthRegister}
+                  className="px-4 py-2 rounded-xl text-sm"
+                  style={{
+                    background: PALETTE.amber,
+                    color: PALETTE.navy,
+                    fontWeight: 600,
+                  }}
+                >
+                  {t.dispatch.authBannerRegister}
+                </button>
+                <button
+                  type="button"
+                  onClick={onAuthSignIn}
+                  className="px-4 py-2 rounded-xl text-sm"
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    color: PALETTE.white,
+                    fontWeight: 600,
+                  }}
+                >
+                  {t.dispatch.authBannerSignIn}
+                </button>
+              </div>
+            </div>
           )}
 
           <div className="space-y-3">
