@@ -2,7 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
+import { acceptQuoteClient, classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
+import {
+  displayNameFromUser,
+  initialFromName,
+  syncProfileFromAuth,
+} from "@/lib/auth/profile-sync";
 import {
   BASE_PRICE,
   DEMO_MERCHANTS,
@@ -37,6 +42,9 @@ export function RivlyApp() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [accepted, setAccepted] = useState<Quote | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
+  const [userInitial, setUserInitial] = useState<string | null>(null);
+  const [acceptingQuoteId, setAcceptingQuoteId] = useState<string | null>(null);
   const [merchantCount, setMerchantCount] = useState(3);
   const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -51,18 +59,48 @@ export function RivlyApp() {
 
   useEffect(() => () => timeouts.current.forEach(clearTimeout), []);
 
-  useEffect(() => {
+  const refreshUserProfile = async () => {
     if (!isSupabaseConfigured()) return;
 
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setUserEmail(data.user?.email ?? null);
-    });
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
 
+    if (!user) {
+      setUserEmail(null);
+      setUserDisplayName(null);
+      setUserInitial(null);
+      return;
+    }
+
+    setUserEmail(user.email ?? null);
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name, preferred_language")
+      .eq("id", user.id)
+      .single();
+
+    const preferred = await syncProfileFromAuth(supabase, user);
+    if (preferred) {
+      localStorage.setItem("rivly-locale", preferred);
+    }
+
+    const name = displayNameFromUser(user, profile);
+    setUserDisplayName(name);
+    setUserInitial(initialFromName(name));
+  };
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
+    refreshUserProfile();
+
+    const supabase = createClient();
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserEmail(session?.user?.email ?? null);
+    } = supabase.auth.onAuthStateChange(() => {
+      refreshUserProfile();
     });
 
     return () => subscription.unsubscribe();
@@ -194,11 +232,6 @@ export function RivlyApp() {
         setJobId(id);
         setMerchantCount(dispatched);
 
-        if (dispatched === 0) {
-          simulateDemoQuotes(req.classification);
-          return;
-        }
-
         subscribeToQuotes(id);
         const res = await fetch(`/api/jobs?jobId=${id}`);
         if (res.ok) {
@@ -294,11 +327,30 @@ export function RivlyApp() {
     setError(null);
   };
 
+  const handleAcceptQuote = async (quote: Quote) => {
+    if (!quote.id || !jobId) {
+      setAccepted(quote);
+      return;
+    }
+
+    setAcceptingQuoteId(quote.id);
+    try {
+      await acceptQuoteClient({ jobId, quoteId: quote.id });
+      setAccepted(quote);
+    } catch {
+      setError(t.dispatch.acceptQuoteError);
+    } finally {
+      setAcceptingQuoteId(null);
+    }
+  };
+
   const handleLogout = async () => {
     if (!isSupabaseConfigured()) return;
     const supabase = createClient();
     await supabase.auth.signOut();
     setUserEmail(null);
+    setUserDisplayName(null);
+    setUserInitial(null);
   };
 
   return (
@@ -309,6 +361,8 @@ export function RivlyApp() {
         <Header
           onReset={reset}
           userEmail={userEmail}
+          userDisplayName={userDisplayName}
+          userInitial={userInitial}
           onLogout={handleLogout}
         />
 
@@ -333,7 +387,8 @@ export function RivlyApp() {
             accepted={accepted}
             merchantCount={merchantCount}
             onReset={reset}
-            onAccept={setAccepted}
+            onAccept={handleAcceptQuote}
+            acceptingQuoteId={acceptingQuoteId}
           />
         )}
       </div>

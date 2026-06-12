@@ -112,3 +112,102 @@ export async function GET(request: Request) {
 
   return NextResponse.json({ quotes: quotes ?? [] });
 }
+
+export async function PATCH(request: Request) {
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json(
+      { error: "Supabase not configured" },
+      { status: 503 },
+    );
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
+  try {
+    const { jobId, quoteId } = (await request.json()) as {
+      jobId: string;
+      quoteId: string;
+    };
+
+    if (!jobId || !quoteId) {
+      return NextResponse.json(
+        { error: "jobId and quoteId required" },
+        { status: 400 },
+      );
+    }
+
+    const { data: job, error: jobError } = await supabase
+      .from("jobs")
+      .select("id, customer_id")
+      .eq("id", jobId)
+      .single();
+
+    if (jobError || !job) {
+      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+    }
+
+    if (job.customer_id !== user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const { data: quote, error: quoteError } = await supabase
+      .from("quotes")
+      .select("id, job_id, status, price_eur")
+      .eq("id", quoteId)
+      .eq("job_id", jobId)
+      .single();
+
+    if (quoteError || !quote) {
+      return NextResponse.json({ error: "Quote not found" }, { status: 404 });
+    }
+
+    if (quote.status !== "submitted" || !quote.price_eur) {
+      return NextResponse.json(
+        { error: "Quote is not ready to accept" },
+        { status: 400 },
+      );
+    }
+
+    const { error: acceptError } = await supabase
+      .from("quotes")
+      .update({ status: "accepted" })
+      .eq("id", quoteId);
+
+    if (acceptError) {
+      throw new Error(acceptError.message);
+    }
+
+    await supabase
+      .from("quotes")
+      .update({ status: "rejected" })
+      .eq("job_id", jobId)
+      .neq("id", quoteId)
+      .in("status", ["pending", "submitted"]);
+
+    const { error: jobUpdateError } = await supabase
+      .from("jobs")
+      .update({
+        accepted_quote_id: quoteId,
+        status: "accepted",
+      })
+      .eq("id", jobId);
+
+    if (jobUpdateError) {
+      throw new Error(jobUpdateError.message);
+    }
+
+    return NextResponse.json({ ok: true, quoteId, jobId });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Accept failed" },
+      { status: 500 },
+    );
+  }
+}

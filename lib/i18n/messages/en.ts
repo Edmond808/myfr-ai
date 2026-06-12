@@ -35,6 +35,11 @@ export const messages = {
     continueToDispatch: "Continue to dispatch",
     language: "Preferred language",
     defaultLocation: "Default city",
+    continueWithGoogle: "Continue with Google",
+    continueWithApple: "Continue with Apple",
+    orEmail: "or continue with email",
+    oauthError: "Could not start sign-in. Try again.",
+    oauthRedirecting: "Redirecting…",
   },
   dispatch: {
     newRequest: "New request",
@@ -46,6 +51,8 @@ export const messages = {
     quotesIn: "quotes in",
     quoting: "Quoting…",
     acceptQuote: "Accept quote",
+    acceptingQuote: "Accepting…",
+    acceptQuoteError: "Could not accept quote. Try again.",
     quoteAccepted: "Quote accepted — payment held in escrow",
     confirmedFor: "is confirmed for",
     escrowNote:

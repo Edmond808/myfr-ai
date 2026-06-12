@@ -18,6 +18,7 @@ interface DispatchViewProps {
   merchantCount: number;
   onReset: () => void;
   onAccept: (quote: Quote) => void;
+  acceptingQuoteId?: string | null;
 }
 
 export function DispatchView({
@@ -27,6 +28,7 @@ export function DispatchView({
   merchantCount,
   onReset,
   onAccept,
+  acceptingQuoteId,
 }: DispatchViewProps) {
   const { t } = useLocale();
   const CatIcon = CATEGORY_ICONS[job.category];
@@ -169,14 +171,17 @@ export function DispatchView({
                     <button
                       type="button"
                       onClick={() => onAccept(q)}
-                      className="px-4 py-2 rounded-xl text-sm"
+                      disabled={acceptingQuoteId === q.id}
+                      className="px-4 py-2 rounded-xl text-sm disabled:opacity-60"
                       style={{
                         background: PALETTE.navy,
                         color: PALETTE.white,
                         fontWeight: 600,
                       }}
                     >
-                      {t.dispatch.acceptQuote}
+                      {acceptingQuoteId === q.id
+                        ? t.dispatch.acceptingQuote
+                        : t.dispatch.acceptQuote}
                     </button>
                   </div>
                 ) : (

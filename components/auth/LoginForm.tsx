@@ -7,6 +7,8 @@ import { PALETTE } from "@/lib/constants";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient } from "@/lib/supabase/client";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { OAuthButtons } from "@/components/auth/OAuthButtons";
+import { syncProfileFromAuth } from "@/lib/auth/profile-sync";
 
 export function LoginForm() {
   const { t } = useLocale();
@@ -36,13 +38,12 @@ export function LoginForm() {
       return;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("preferred_language")
-      .single();
-
-    if (profile?.preferred_language === "fr" || profile?.preferred_language === "en") {
-      localStorage.setItem("rivly-locale", profile.preferred_language);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const preferred = await syncProfileFromAuth(supabase, user);
+      if (preferred) {
+        localStorage.setItem("rivly-locale", preferred);
+      }
     }
 
     router.push(next);
@@ -53,6 +54,8 @@ export function LoginForm() {
       <div className="flex justify-end">
         <LanguageSwitcher />
       </div>
+
+      <OAuthButtons next={next} />
 
       <div>
         <label className="block text-sm mb-1 font-medium">{t.auth.email}</label>
