@@ -184,6 +184,10 @@ export function DispatchView({
             {quotes.length} {t.dispatch.quotesIn}
           </h3>
 
+          <p className="text-xs mb-3" style={{ color: "#5C7E92" }}>
+            {t.dispatch.rankingDisclosure}
+          </p>
+
           {merchantCount === 0 && (
             <p className="text-sm mb-4" style={{ color: "#5C7E92" }}>
               {t.dispatch.noMerchantsYet}

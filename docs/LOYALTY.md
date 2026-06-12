@@ -4,12 +4,20 @@ myfr.ai loyalty beats OTA patterns (Booking.com Genius) with transparent Mediter
 
 ## Tiers
 
-| Tier | Name | Discount | Unlock |
-|------|------|----------|--------|
-| 0 | Guest | 0% | Default — join free |
-| 1 | Azur I | 8% | 1 completed booking |
-| 2 | Côte II | 12% | 4 completed bookings |
-| 3 | Prestige III | 18% | 10 completed bookings |
+| Tier | Name | Discount | Platform margin (15% commission) | Unlock |
+|------|------|----------|----------------------------------|--------|
+| 0 | Guest | 0% | 15% | Default — join free |
+| 1 | Azur I | 3% | 12% | 1 completed booking |
+| 2 | Côte II | 5% | 10% | 4 completed bookings |
+| 3 | Prestige III | 8% | 7% | 10 completed bookings |
+
+**Economics rule:** every discount must stay below the 15% commission so
+member pricing never inverts the margin (the original 8/12/18% made
+Prestige bookings margin-negative). `lib/loyalty.ts` enforces this with a
+startup guard against `PLATFORM_COMMISSION`. Phase 4 option: move to
+merchant-funded discounts (Booking Genius model — pros opt in for better
+placement and fund the discount from their payout), which allows deeper
+discounts at zero platform cost.
 
 ## Pricing
 

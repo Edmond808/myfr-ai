@@ -53,7 +53,7 @@ export const messages: Messages = {
   dispatch: {
     newRequest: "Nouvelle demande",
     aiEstimate: "Estimation marché IA",
-    demoMode: "Mode démo — définissez ANTHROPIC_API_KEY pour le dispatch IA live",
+    demoMode: "Aperçu — exemples de pros et de prix, pas de vrais devis",
     clarifyingPrefix: "Pour un devis précis, les pros demanderont :",
     sentTo: "Envoyé à",
     verifiedPros: "pros vérifiés",
@@ -92,6 +92,8 @@ export const messages: Messages = {
     maxPriceChip: "Max €{price}",
     clearFilters: "Tout effacer",
     sponsored: "Sponsorisé",
+    rankingDisclosure:
+      "Ordre des devis : placements sponsorisés d'abord, puis note et missions réalisées.",
     filtersEmpty: "Aucun devis ne correspond — ajustez les filtres ou effacez-les.",
     showingQuotes: "{shown} sur {total} devis",
     repliesInMinutes: "Répond en ~{minutes} min",
@@ -104,8 +106,8 @@ export const messages: Messages = {
   },
   loyalty: {
     clubName: "Riviera Club",
-    unlockTeaser: "Débloquez les tarifs Riviera Club — inscription gratuite",
-    signUpToUnlock: "Inscrivez-vous pour débloquer",
+    unlockTeaser: "Riviera Club — adhésion gratuite, tarifs membres dès votre 2e réservation",
+    signUpToUnlock: "Inscrivez-vous pour commencer à cumuler",
     firstBookingUnlock: "Complétez votre première réservation pour débloquer les tarifs Azur I",
     youSave: "Vous économisez €{amount} avec {tier}",
     memberPrice: "Tarif membre",
@@ -113,7 +115,7 @@ export const messages: Messages = {
     priceLocked: "Tarif membre garanti",
     progressTease: "{count} réservations avant {tier}",
     progressTeaseOne: "1 réservation avant {tier}",
-    perkGuest: "Inscription gratuite pour débloquer les tarifs membres",
+    perkGuest: "Adhésion gratuite — tarifs membres dès la 2e réservation",
     perkAzur: "Tarifs membres + pros vérifiés",
     perkCote: "Dispatch prioritaire + avantages Azur",
     perkPrestige: "Ligne conciergerie + meilleurs tarifs",

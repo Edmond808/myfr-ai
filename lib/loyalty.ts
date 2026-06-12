@@ -1,5 +1,9 @@
 export type LoyaltyTier = 0 | 1 | 2 | 3;
 
+// Platform commission. Loyalty discounts MUST stay below this so member
+// pricing never inverts the margin (see docs/LOYALTY.md, economics).
+export const PLATFORM_COMMISSION = 0.15;
+
 export interface TierConfig {
   tier: LoyaltyTier;
   name: string;
@@ -22,7 +26,7 @@ export const LOYALTY_TIERS: Record<LoyaltyTier, TierConfig> = {
     tier: 1,
     name: "Azur",
     roman: "I",
-    discount: 0.08,
+    discount: 0.03,
     perkKey: "azur",
     bookingsToReach: 1,
   },
@@ -30,7 +34,7 @@ export const LOYALTY_TIERS: Record<LoyaltyTier, TierConfig> = {
     tier: 2,
     name: "Côte",
     roman: "II",
-    discount: 0.12,
+    discount: 0.05,
     perkKey: "cote",
     bookingsToReach: 4,
   },
@@ -38,11 +42,20 @@ export const LOYALTY_TIERS: Record<LoyaltyTier, TierConfig> = {
     tier: 3,
     name: "Prestige",
     roman: "III",
-    discount: 0.18,
+    discount: 0.08,
     perkKey: "prestige",
     bookingsToReach: 10,
   },
 };
+
+const maxDiscount = Math.max(
+  ...Object.values(LOYALTY_TIERS).map((t) => t.discount),
+);
+if (maxDiscount >= PLATFORM_COMMISSION) {
+  throw new Error(
+    "Loyalty misconfigured: max tier discount must stay below platform commission",
+  );
+}
 
 export const PREVIEW_TIER: LoyaltyTier = 1;
 

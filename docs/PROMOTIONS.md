@@ -4,7 +4,7 @@ Verified pros can pay for **sponsored placement** at the top of the customer quo
 
 ## How it works
 
-1. Customer submits a request → `dispatch_job()` creates pending quotes for **all** verified merchants matching category + service area.
+1. Customer submits a request → `dispatch_job()` runs **staged dispatch** (migration 006): wave 1 = all active-promoted pros + top 5 by rating. `widen_dispatch(job_id)` adds remaining matching pros — call it via cron ~60–90 min after dispatch when fewer than 2 quotes arrived. Staging protects merchant win rates (all-merchant blasts cause quote fatigue and supply churn).
 2. Merchants with an active promotion appear first, ordered by `promotion_rank` (higher = closer to top), then rating and completed jobs.
 3. Promoted quotes show an amber **Sponsored** badge in `DispatchView`.
 
@@ -40,3 +40,10 @@ Suggested Phase 4 flow:
 ## Customer filters & analytics
 
 Customers can sort and filter quotes (price, rating, response time). Choices are logged to `user_quote_preferences` via `POST /api/analytics/quote-filters` for future personalized offers.
+
+## Ranking disclosure (EU/FR compliance)
+
+The customer quote list displays the ordering criteria ("sponsored first,
+then rating and completed jobs") via `t.dispatch.rankingDisclosure` —
+required transparency for paid ranking under EU consumer rules. Keep this
+line if the ordering logic changes; update it instead of removing it.

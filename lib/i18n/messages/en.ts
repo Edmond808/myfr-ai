@@ -50,7 +50,7 @@ export const messages = {
   dispatch: {
     newRequest: "New request",
     aiEstimate: "AI market estimate",
-    demoMode: "Demo mode — set ANTHROPIC_API_KEY for live AI dispatch",
+    demoMode: "Preview — example pros and prices, not real quotes",
     clarifyingPrefix: "To quote precisely, pros will ask:",
     sentTo: "Sent to",
     verifiedPros: "verified pros",
@@ -89,6 +89,8 @@ export const messages = {
     maxPriceChip: "Max €{price}",
     clearFilters: "Clear all",
     sponsored: "Sponsored",
+    rankingDisclosure:
+      "Quote order: sponsored placement first, then rating and completed jobs.",
     filtersEmpty: "No quotes match your filters — try adjusting or clear filters.",
     showingQuotes: "Showing {shown} of {total}",
     repliesInMinutes: "Replies in ~{minutes} min",
@@ -101,8 +103,8 @@ export const messages = {
   },
   loyalty: {
     clubName: "Riviera Club",
-    unlockTeaser: "Unlock Riviera Club prices — free to join",
-    signUpToUnlock: "Sign up to unlock",
+    unlockTeaser: "Riviera Club — free to join, member prices from your 2nd booking",
+    signUpToUnlock: "Sign up to start earning",
     firstBookingUnlock: "Complete your first booking to unlock Azur I member prices",
     youSave: "You save €{amount} with {tier}",
     memberPrice: "Member price",
@@ -110,7 +112,7 @@ export const messages = {
     priceLocked: "Member price locked",
     progressTease: "{count} bookings until {tier}",
     progressTeaseOne: "1 booking until {tier}",
-    perkGuest: "Join free to unlock member prices",
+    perkGuest: "Join free — member prices from your 2nd booking",
     perkAzur: "Member prices + verified pros",
     perkCote: "Priority dispatch + Azur perks",
     perkPrestige: "Concierge line + best rates",

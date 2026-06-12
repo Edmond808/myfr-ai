@@ -151,9 +151,11 @@ Actual:   Dispatch fails or demo fallback; pro feed empty
 - [2026-06-12] PR #9 merged — sponsored quote placement, quote filter bar, full pro dispatch, lucide server fix.
 - [2026-06-12] PR #10 merged — signup `handle_new_user` fix, App Router error boundaries, `/account/requests`, dev.sh port cleanup, dispatch error UX.
 
+- [2026-06-12] [CLAUDE] — Applied `claude-review-fixes-v2.patch` on main: margin-safe loyalty tiers (3/5/8%), RLS fix on `user_quote_preferences`, staged dispatch (`dispatch_job` wave 1 + `widen_dispatch` wave 2), EU ranking disclosure, honest demo/loyalty copy. Migration `006_review_fixes.sql` — run in Supabase.
+
 ## Next
 
-1. Run migrations `003_loyalty_tier.sql`, `004_promoted_and_analytics.sql`, `005_fix_handle_new_user.sql` in Supabase (if not already)
+1. Run migrations `003_loyalty_tier.sql`, `004_promoted_and_analytics.sql`, `005_fix_handle_new_user.sql`, `006_review_fixes.sql` in Supabase (if not already)
 2. Job completion loop (Improvement #1 in roadmap)
 3. Resend dispatch notifications
 4. Phase 4 — Stripe Connect (`docs/STRIPE_CONNECT.md`)
