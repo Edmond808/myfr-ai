@@ -19,6 +19,10 @@ npm run dev            # http://localhost:3000
 
 Works in **demo mode** without Supabase or Anthropic keys — uses keyword classification and simulated quotes.
 
+### Stale `.next` cache
+
+If dev shows `Cannot find module './NNN.js'` in `.next/server/webpack-runtime.js`, kill the dev server, run `rm -rf .next`, then `npm run dev:clean` (or `./scripts/dev.sh`, which clears the cache automatically).
+
 ## Supabase setup (Phase 2)
 
 1. Create project in **EU region** (Frankfurt or Paris)

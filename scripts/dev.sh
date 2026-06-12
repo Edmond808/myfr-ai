@@ -5,7 +5,8 @@ cd "$(dirname "$0")/.."
 
 echo "Starting myfr.ai dev server on http://localhost:3000"
 echo "Keep this terminal open — ERR_CONNECTION_REFUSED means the server stopped."
-echo "For a clean rebuild: npm run dev:clean"
 echo ""
+echo "Clearing .next cache (avoids stale webpack chunk errors)..."
+rm -rf .next
 
 npm run dev
