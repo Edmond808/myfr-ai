@@ -1,6 +1,6 @@
 export const messages = {
-  brand: "Rivly",
-  tagline: "French Riviera · prototype",
+  brand: "myfr.ai",
+  tagline: "My French Riviera · Côte d'Azur",
   home: {
     title1: "What do you need",
     title2: "on the Côte d'Azur?",
@@ -24,7 +24,7 @@ export const messages = {
     confirmPassword: "Confirm password",
     noAccount: "No account yet?",
     hasAccount: "Already have an account?",
-    registerTitle: "Join Rivly",
+    registerTitle: "Join myfr.ai",
     registerSubtitle: "Create an account to dispatch requests to verified Riviera pros.",
     loginTitle: "Welcome back",
     loginSubtitle: "Sign in to send requests and track your jobs.",
@@ -128,7 +128,7 @@ export const messages = {
     loginRequired: "Sign in to apply as a pro or manage quotes.",
     signIn: "Sign in",
     createAccount: "Create account",
-    backToHome: "Back to Rivly",
+    backToHome: "Back to myfr.ai",
     jobBudget: "Customer budget estimate",
     notificationsTodo: "Email notifications on new jobs — coming soon (Resend).",
   },

@@ -13,7 +13,7 @@ import { messages as en, type Messages } from "./messages/en";
 import { messages as fr } from "./messages/fr";
 import type { Locale } from "@/lib/types";
 
-const STORAGE_KEY = "rivly-locale";
+const STORAGE_KEY = "myfr-locale";
 
 type LocaleContextValue = {
   locale: Locale;

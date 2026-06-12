@@ -10,7 +10,7 @@ if [ -d "$CLAUDE_WS/.git" ]; then
   git fetch origin
   git pull origin main || true
 else
-  echo "Cloning Rivly repo to $CLAUDE_WS..."
+  echo "Cloning myfr.ai repo to $CLAUDE_WS..."
   git clone "$CURSOR_WS" "$CLAUDE_WS"
   cd "$CLAUDE_WS"
 fi

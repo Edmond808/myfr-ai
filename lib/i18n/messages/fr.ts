@@ -1,8 +1,8 @@
 import type { Messages } from "./en";
 
 export const messages: Messages = {
-  brand: "Rivly",
-  tagline: "Côte d'Azur · prototype",
+  brand: "myfr.ai",
+  tagline: "Ma French Riviera · Côte d'Azur",
   home: {
     title1: "De quoi avez-vous besoin",
     title2: "sur la Côte d'Azur ?",
@@ -26,7 +26,7 @@ export const messages: Messages = {
     confirmPassword: "Confirmer le mot de passe",
     noAccount: "Pas encore de compte ?",
     hasAccount: "Déjà un compte ?",
-    registerTitle: "Rejoindre Rivly",
+    registerTitle: "Rejoindre myfr.ai",
     registerSubtitle:
       "Créez un compte pour envoyer vos demandes aux pros vérifiés de la Riviera.",
     loginTitle: "Bon retour",
@@ -131,7 +131,7 @@ export const messages: Messages = {
     loginRequired: "Connectez-vous pour postuler ou gérer vos devis.",
     signIn: "Se connecter",
     createAccount: "Créer un compte",
-    backToHome: "Retour à Rivly",
+    backToHome: "Retour à myfr.ai",
     jobBudget: "Budget estimé client",
     notificationsTodo: "Notifications e-mail pour nouvelles missions — bientôt (Resend).",
   },

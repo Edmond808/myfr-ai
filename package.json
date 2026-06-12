@@ -1,6 +1,7 @@
 {
   "name": "myfr.ai",
   "private": true,
+  "description": "myfr.ai — AI-powered services marketplace for the French Riviera (Côte d'Azur)",
   "version": "0.1.0",
   "type": "module",
   "scripts": {

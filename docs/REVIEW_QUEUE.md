@@ -10,6 +10,8 @@
 
 - [2026-06-12] [CURSOR] [main] — **User action:** Enable branch protection on `main` (require CI + 1 review). See `docs/PR_REVIEW_AND_ROADMAP.md` Part 4.
 
+- [2026-06-12] [CURSOR] [cursor/rebrand-myfr-ai] — Rebrand Rivly → **myfr.ai**; French tricolor entry splash (`LoadingSplash`), favicon, docs/metadata/i18n. Needs review: splash on first session visit, instant on repeat navigation.
+
 ## Claude reviews
 
 - [2026-06-12] [CLAUDE] — Reviewed PRs #2/#3; handoff at `docs/PR_REVIEW_AND_ROADMAP.md`. Fixes A–E applied on `cursor/phase-3-oauth-journey` before merge.

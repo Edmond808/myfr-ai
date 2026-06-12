@@ -1,6 +1,6 @@
-# Rivly / myfr.ai
+# myfr.ai
 
-AI-powered services marketplace for the French Riviera.
+**My French Riviera** — AI-powered services marketplace for the Côte d'Azur.
 
 ## Stack
 
@@ -55,7 +55,7 @@ app/
   api/jobs/         # Persist job + dispatch_job RPC + fetch quotes
   api/profile/      # User profile CRUD
   auth/             # Login, register, OAuth callback
-components/         # RivlyApp, HomeView, DispatchView, auth forms
+components/         # RivlyApp, HomeView, DispatchView, LoadingSplash, auth forms
 lib/                # classify, constants, i18n, supabase clients
 schema.sql          # Full Supabase schema + RLS + dispatch_job()
 ```

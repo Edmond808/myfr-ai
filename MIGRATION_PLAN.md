@@ -9,7 +9,7 @@ Goal: get a deployable server. The Vite dev middleware for `/api/classify`
 does not exist in production builds.
 
 1. `npx create-next-app@latest myfr-next --typescript --tailwind --app`
-2. Move `src/components/*` and `src/lib/*` as-is. RivlyApp/HomeView/DispatchView
+2. Move `src/components/*` and `src/lib/*` as-is. `RivlyApp`/`HomeView`/`DispatchView`
    become client components (`'use client'`).
 3. `server/classify.ts` → `app/api/classify/route.ts` (POST handler).
    Keep the prompt byte-for-byte identical — it is core IP. Keep the

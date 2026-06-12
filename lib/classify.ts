@@ -1,6 +1,5 @@
 import type { Category, JobClassification, Urgency } from "./types";
-
-const BRAND = "Rivly";
+import { BRAND } from "./constants";
 
 const CATEGORIES: Category[] = [
   "groceries",

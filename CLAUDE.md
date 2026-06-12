@@ -1,4 +1,4 @@
-# Rivly — Claude Code Instructions
+# myfr.ai — Claude Code Instructions
 
 Read `AGENTS.md` first for project context and dual-team workflow.
 
@@ -41,9 +41,10 @@ Leave review notes in `docs/REVIEW_QUEUE.md` under "Claude reviews".
 
 ## Key files
 
-- `src/components/RivlyApp.tsx` — main state + flow
-- `server/classify.ts` — AI dispatch (never call Anthropic from browser)
-- `src/lib/constants.ts` — brand, merchants, categories
+- `components/RivlyApp.tsx` — main state + flow
+- `app/api/classify/route.ts` — AI dispatch (never call Anthropic from browser)
+- `lib/constants.ts` — brand (`myfr.ai`), merchants, categories
+- `components/LoadingSplash.tsx` — entry splash (French tricolor)
 
 ## Do not
 

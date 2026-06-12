@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import type { Category, Merchant } from "./types";
 
-export const BRAND = "Rivly";
+export const BRAND = "myfr.ai";
+export const BRAND_TAGLINE = "My French Riviera · Côte d'Azur";
 export const COMMISSION = 0.15;
 
 export const PALETTE = {

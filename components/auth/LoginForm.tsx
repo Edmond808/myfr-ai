@@ -42,7 +42,7 @@ export function LoginForm() {
     if (user) {
       const preferred = await syncProfileFromAuth(supabase, user);
       if (preferred) {
-        localStorage.setItem("rivly-locale", preferred);
+        localStorage.setItem("myfr-locale", preferred);
       }
     }
 

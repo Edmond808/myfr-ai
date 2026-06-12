@@ -1,11 +1,12 @@
 ---
-description: Rivly / myfr.ai project conventions
-globs: app/**/*,components/**/*,lib/**/*
-alwaysApply: false
+description: myfr.ai project conventions
+globs:
+alwaysApply: true
 ---
 
-# Rivly conventions
+# myfr.ai conventions
 
+- Brand name: **myfr.ai** (`BRAND` in `lib/constants.ts`, i18n `brand` field)
 - Next.js App Router — no Vite, no client-side API keys
 - Classification prompt in `lib/classify.ts` is core IP — do not change without review
 - 8 categories must stay in sync: `lib/types.ts`, `schema.sql` enum, classifier prompt

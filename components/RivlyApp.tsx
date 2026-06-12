@@ -92,7 +92,7 @@ export function RivlyApp() {
 
     const preferred = await syncProfileFromAuth(supabase, user);
     if (preferred) {
-      localStorage.setItem("rivly-locale", preferred);
+      localStorage.setItem("myfr-locale", preferred);
     }
 
     const name = displayNameFromUser(user, profile);
@@ -119,7 +119,7 @@ export function RivlyApp() {
     const resume = searchParams.get("resume");
     if (resume !== "dispatch") return;
 
-    const stored = sessionStorage.getItem("rivly-pending");
+    const stored = sessionStorage.getItem("myfr-pending");
     if (!stored) return;
 
     const run = async () => {
@@ -128,7 +128,7 @@ export function RivlyApp() {
       if (!data.user) return;
 
       const req = JSON.parse(stored) as PendingRequest;
-      sessionStorage.removeItem("rivly-pending");
+      sessionStorage.removeItem("myfr-pending");
       await completeDispatch(req);
       router.replace("/");
     };
@@ -310,7 +310,7 @@ export function RivlyApp() {
         const { data } = await supabase.auth.getUser();
 
         if (!data.user) {
-          sessionStorage.setItem("rivly-pending", JSON.stringify(req));
+          sessionStorage.setItem("myfr-pending", JSON.stringify(req));
           router.push(
             `/auth/register?next=${encodeURIComponent("/?resume=dispatch")}`,
           );
