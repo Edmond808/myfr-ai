@@ -1,6 +1,15 @@
 import type { QuoteFilterState } from "./quote-filters";
 import type { JobClassification } from "./types";
 
+export class ApiClientError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 export async function classifyRequestClient(
   text: string,
   location: string,
@@ -13,7 +22,7 @@ export async function classifyRequestClient(
 
   if (!response.ok) {
     const err = (await response.json().catch(() => ({}))) as { error?: string };
-    throw new Error(err.error ?? "Classification failed");
+    throw new ApiClientError(err.error ?? "Classification failed", response.status);
   }
 
   return response.json() as Promise<JobClassification>;
@@ -31,7 +40,7 @@ export async function dispatchJobClient(payload: {
 
   if (!response.ok) {
     const err = (await response.json().catch(() => ({}))) as { error?: string };
-    throw new Error(err.error ?? "Dispatch failed");
+    throw new ApiClientError(err.error ?? "Dispatch failed", response.status);
   }
 
   return response.json() as Promise<{ jobId: string; dispatched: number }>;
@@ -62,6 +71,6 @@ export async function acceptQuoteClient(payload: {
 
   if (!response.ok) {
     const err = (await response.json().catch(() => ({}))) as { error?: string };
-    throw new Error(err.error ?? "Accept quote failed");
+    throw new ApiClientError(err.error ?? "Accept quote failed", response.status);
   }
 }
