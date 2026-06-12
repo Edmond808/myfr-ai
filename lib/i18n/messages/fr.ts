@@ -34,6 +34,10 @@ export const messages: Messages = {
     registerSuccess: "Vérifiez votre e-mail pour confirmer votre compte, puis connectez-vous.",
     loginError: "E-mail ou mot de passe incorrect.",
     registerError: "Impossible de créer le compte. Essayez un autre e-mail.",
+    registerBrokenAccount:
+      "Ce compte e-mail est corrompu dans notre base. Contactez le support ou réessayez après suppression par un admin.",
+    registerRateLimit: "Trop d'e-mails d'inscription envoyés. Attendez quelques minutes et réessayez.",
+    registerAlreadyExists: "Un compte existe déjà avec cet e-mail. Essayez de vous connecter.",
     passwordMismatch: "Les mots de passe ne correspondent pas.",
     continueToDispatch: "Continuer vers le dispatch",
     language: "Langue préférée",

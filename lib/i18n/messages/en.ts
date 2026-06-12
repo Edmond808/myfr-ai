@@ -31,6 +31,10 @@ export const messages = {
     registerSuccess: "Check your email to confirm your account, then sign in.",
     loginError: "Invalid email or password.",
     registerError: "Could not create account. Try a different email.",
+    registerBrokenAccount:
+      "This email has a broken account in our database. Please contact support or try again after an admin clears it.",
+    registerRateLimit: "Too many sign-up emails sent. Wait a few minutes and try again.",
+    registerAlreadyExists: "An account with this email already exists. Try signing in instead.",
     passwordMismatch: "Passwords do not match.",
     continueToDispatch: "Continue to dispatch",
     language: "Preferred language",
