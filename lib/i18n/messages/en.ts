@@ -82,6 +82,49 @@ export const messages = {
     "Searching for a 1-month apartment rental in Antibes, July…",
     "Private chef for a dinner of 8 on Thursday evening…",
   ],
+  pro: {
+    forPros: "For pros",
+    signupTitle: "Join as a Riviera pro",
+    signupSubtitle:
+      "Apply to receive dispatched jobs in your categories and service areas. We verify every pro manually.",
+    dashboardTitle: "Pro dashboard",
+    dashboardSubtitle: "Respond to dispatched jobs with your quote.",
+    businessName: "Business name",
+    siret: "SIRET (optional)",
+    siretHint: "French business registration number",
+    categories: "Service categories",
+    serviceAreas: "Service areas",
+    whatsapp: "WhatsApp number",
+    email: "Business email",
+    submitApplication: "Submit application",
+    applicationSent: "Application received — we'll review it shortly.",
+    applicationError: "Could not submit application. Try again.",
+    alreadyApplied: "You already have a pro profile.",
+    goToDashboard: "Go to dashboard",
+    statusApplied: "Under review",
+    statusUnderReview: "Under review",
+    statusVerified: "Verified",
+    statusSuspended: "Suspended",
+    pendingVerification:
+      "Your profile is pending verification. You'll receive jobs once approved.",
+    noJobs: "No dispatched jobs right now.",
+    noJobsHint: "Jobs matching your categories and areas will appear here.",
+    quoteForm: "Submit quote",
+    priceEur: "Price (€)",
+    message: "Message to customer",
+    submitQuote: "Send quote",
+    quoteSubmitted: "Quote sent",
+    quoteError: "Could not submit quote. Try again.",
+    expiresAt: "Expires",
+    pendingQuote: "Awaiting your quote",
+    submittedQuote: "Quote sent",
+    loginRequired: "Sign in to apply as a pro or manage quotes.",
+    signIn: "Sign in",
+    createAccount: "Create account",
+    backToHome: "Back to Rivly",
+    jobBudget: "Customer budget estimate",
+    notificationsTodo: "Email notifications on new jobs — coming soon (Resend).",
+  },
   categoryExamples: {
     groceries: "I need someone to do my groceries tomorrow morning in Cannes…",
     housekeeping:
@@ -102,6 +145,7 @@ export type Messages = {
   home: Record<string, string>;
   auth: Record<string, string>;
   dispatch: Record<string, string>;
+  pro: Record<string, string>;
   urgency: Record<string, string>;
   categories: Record<string, string>;
   examples: readonly string[];

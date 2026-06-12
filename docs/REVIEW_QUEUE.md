@@ -4,11 +4,11 @@
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [main @ bb35594] — Phase 1-2 pushed to GitHub: Next.js + Supabase schema/API, auth (register/login), EN/FR i18n, VoiceInput (Web Speech API). Needs: Claude code review of `app/api/jobs/route.ts` + `components/RivlyApp.tsx`
+- [2026-06-12] [CURSOR] [cursor/phase-3-merchant] — Phase 3 merchant side: `/pro` signup (status `applied`), `/pro/dashboard` job feed + quote submit, RLS patches in `schema.sql`, `scripts/verify-merchant.sql`. Needs: Claude review of merchant API routes + RLS policies. TODO: Resend email notifications (Phase 3 item 3).
 
 ## Claude reviews
 
-_(Pending: review realtime quote subscription and dispatch_job RPC integration)_
+_(Pending: review merchant_job_feed RLS + quote submit flow on `cursor/phase-3-merchant`)_
 
 ## Completed
 
@@ -17,7 +17,8 @@ _(Pending: review realtime quote subscription and dispatch_job RPC integration)_
 - [2026-06-12] Phase 2 — Supabase schema, auth gate, job persistence API (code ready; Supabase project TBD)
 - [2026-06-12] VoiceInput — Web Speech API with interim preview, EN/FR locale
 - [2026-06-12] `npm run build` passes (Next.js 15.5.19)
+- [2026-06-12] [main @ bb35594] — Phase 1-2 pushed to GitHub: Next.js + Supabase schema/API, auth (register/login), EN/FR i18n, VoiceInput
 
 ## Next (do not start until review)
 
-- Phase 3 — Merchant dashboard (`/pro`)
+- Phase 4 — Stripe Connect (commission + escrow)
