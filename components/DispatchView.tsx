@@ -36,19 +36,13 @@ export function DispatchView({
       <button
         type="button"
         onClick={onReset}
-        className="flex items-center gap-1 text-sm mb-6"
+        className="reveal flex items-center gap-1 text-sm mb-6"
         style={{ color: PALETTE.azure, fontWeight: 500 }}
       >
         <ArrowLeft size={16} /> {t.dispatch.newRequest}
       </button>
 
-      <div
-        className="rounded-2xl p-6"
-        style={{
-          background: PALETTE.white,
-          border: `1px solid ${PALETTE.line}`,
-        }}
-      >
+      <div className="reveal reveal-d1 glass-rivly rounded-2xl p-6">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <div
@@ -114,7 +108,7 @@ export function DispatchView({
       {!accepted && (
         <>
           <h3
-            className="mt-8 mb-3"
+            className="reveal reveal-d2 mt-8 mb-3"
             style={{
               fontFamily: "var(--font-fraunces), serif",
               fontSize: 20,
@@ -135,10 +129,9 @@ export function DispatchView({
             {quotes.map((q) => (
               <div
                 key={q.id ?? q.merchant.name}
-                className="rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap"
+                className={`glass-rivly lift-hover rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap${q.price ? " pop-in" : ""}`}
                 style={{
-                  background: PALETTE.white,
-                  border: `1px solid ${q.price ? PALETTE.azure : PALETTE.line}`,
+                  borderColor: q.price ? "rgba(43, 134, 188, 0.35)" : undefined,
                 }}
               >
                 <div>
@@ -192,7 +185,7 @@ export function DispatchView({
                     style={{ color: PALETTE.azure }}
                   >
                     <span
-                      className="inline-block w-2 h-2 rounded-full animate-pulse"
+                      className="inline-block w-2 h-2 rounded-full sonar-dot"
                       style={{ background: PALETTE.azure }}
                     />
                     {t.dispatch.quoting}
@@ -205,13 +198,7 @@ export function DispatchView({
       )}
 
       {accepted && (
-        <div
-          className="mt-8 rounded-2xl p-6"
-          style={{
-            background: PALETTE.white,
-            border: `1px solid ${PALETTE.line}`,
-          }}
-        >
+        <div className="reveal glass-rivly mt-8 rounded-2xl p-6">
           <div
             className="flex items-center gap-2"
             style={{ color: "#1F7A4D", fontWeight: 600 }}

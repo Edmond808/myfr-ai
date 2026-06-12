@@ -17,6 +17,7 @@ import type {
   Quote,
   View,
 } from "@/lib/types";
+import { AmbientBackground } from "./AmbientBackground";
 import { DispatchView } from "./DispatchView";
 import { Header } from "./Header";
 import { HomeView } from "./HomeView";
@@ -303,6 +304,7 @@ export function RivlyApp() {
 
   return (
     <div
+      className="relative"
       style={{
         minHeight: "100vh",
         background: PALETTE.bg,
@@ -310,13 +312,16 @@ export function RivlyApp() {
         fontFamily: "var(--font-inter), -apple-system, 'Segoe UI', sans-serif",
       }}
     >
-      <Header
-        onReset={reset}
-        userEmail={userEmail}
-        onLogout={handleLogout}
-      />
+      <AmbientBackground />
 
-      {view === "home" && (
+      <div className="relative z-10">
+        <Header
+          onReset={reset}
+          userEmail={userEmail}
+          onLogout={handleLogout}
+        />
+
+        {view === "home" && (
         <HomeView
           text={text}
           location={location}
@@ -330,16 +335,17 @@ export function RivlyApp() {
         />
       )}
 
-      {view === "dispatch" && job && (
-        <DispatchView
-          job={job}
-          quotes={quotes}
-          accepted={accepted}
-          merchantCount={merchantCount}
-          onReset={reset}
-          onAccept={setAccepted}
-        />
-      )}
+        {view === "dispatch" && job && (
+          <DispatchView
+            job={job}
+            quotes={quotes}
+            accepted={accepted}
+            merchantCount={merchantCount}
+            onReset={reset}
+            onAccept={setAccepted}
+          />
+        )}
+      </div>
     </div>
   );
 }
