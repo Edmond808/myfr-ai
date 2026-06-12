@@ -4,25 +4,19 @@
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [cursor/promoted-quotes-filters] — Sponsored top placement, show all matching pros, quote filter bar + analytics. Run `supabase/migrations/004_promoted_and_analytics.sql`. See `docs/PROMOTIONS.md`. Needs review: filter/sort UX, sponsored badge, demo 7 merchants/category.
-
-- [2026-06-12] [CURSOR] [cursor/riviera-club-loyalty] — Riviera Club loyalty UX on dispatch quotes: strikethrough + member price, tier badges (Azur I / Côte II / Prestige III), savings pill, anonymous teaser, escrow member price. Run `supabase/migrations/003_loyalty_tier.sql`. Needs review: anonymous quote cards, logged-in tier badge in header, accepted escrow breakdown.
-
-- [2026-06-12] [CURSOR] [cursor/auth-after-quotes] — Anonymous users see demo quotes before auth; dispatch banner + accept-quote gate; logged-in flow unchanged. Needs review: submit logged out → quotes → register → real dispatch.
+- [2026-06-12] [CURSOR] [main @ 883ce27] — **Claude: review latest main.** PRs #8–#10 merged. See Completed below. Run migrations `003`, `004`, `005` in Supabase. Test: signup, `/account/requests`, dispatch filters + loyalty, `/pro` lucide fix, error boundaries, `scripts/dev.sh` on port 3000.
 
 - [2026-06-12] [CURSOR] [cursor/simple-setup] — Non-dev setup: `docs/SETUP_SIMPLE.md`, `npm run setup` wizard, OAuth hidden behind "More options". Needs review: run wizard flow on fresh clone.
-
-- [2026-06-12] [CURSOR] [cursor/setup-bundle] — **User action:** Follow `docs/SETUP_CHECKLIST.md` — create Supabase project, run `supabase/00_RUN_THIS_IN_SUPABASE.sql`, `npm run check:supabase`.
 
 - [2026-06-12] [CURSOR] [main] — Phase 3 item 3 still open: Resend email notifications on merchant dispatch.
 
 - [2026-06-12] [CURSOR] [main] — **User action:** Enable branch protection on `main` (require CI + 1 review). See `docs/PR_REVIEW_AND_ROADMAP.md` Part 4.
 
-- [2026-06-12] [CURSOR] [cursor/rebrand-myfr-ai] — Rebrand Rivly → **myfr.ai**; tricolor **wordmark** logo (my/fr/.ai split colors) on entry splash + header, favicon; Mediterranean chrome unchanged. Needs review: splash first visit, header wordmark, reduced-motion static mark.
-
 ## Claude reviews
 
 - [2026-06-12] [CLAUDE] — Reviewed PRs #2/#3; handoff at `docs/PR_REVIEW_AND_ROADMAP.md`. Fixes A–E applied on `cursor/phase-3-oauth-journey` before merge.
+
+- [2026-06-12] [CLAUDE] — **Start here:** `git checkout main && git pull`. Main @ `883ce27` includes loyalty (#8), promoted quotes + filters (#9), signup/error-boundary/My-requests/dev.sh fixes (#10). Docs: `docs/LOYALTY.md`, `docs/PROMOTIONS.md`, `docs/SUPABASE_AUTH.md`.
 
 ## Completed
 
@@ -35,10 +29,14 @@
 - [2026-06-12] [main @ 4ea7bc9] — Phase 3 merchant signup/dashboard merged (PR #1)
 - [2026-06-12] [cursor/phase-3-oauth-journey] — Claude review fixes: atomic `accept_quote` RPC, realtime channel cleanup, honest empty state, OAuth redirect hardening, POST /api/jobs validation + rate limit, GitHub Actions CI
 - [2026-06-12] PR #3 merged (OAuth + journey + alive-v1 design). PR #2 closed (superseded by #3).
+- [2026-06-12] PR #7 merged — auth-after-quotes (anonymous demo quotes before register).
+- [2026-06-12] PR #8 merged — Riviera Club loyalty UX on dispatch quotes.
+- [2026-06-12] PR #9 merged — sponsored quote placement, quote filter bar, full pro dispatch, lucide server fix.
+- [2026-06-12] PR #10 merged — signup `handle_new_user` fix, App Router error boundaries, `/account/requests`, dev.sh port cleanup, dispatch error UX.
 
 ## Next
 
-1. Run migration `002_accept_quote.sql` in Supabase
+1. Run migrations `003_loyalty_tier.sql`, `004_promoted_and_analytics.sql`, `005_fix_handle_new_user.sql` in Supabase (if not already)
 2. Job completion loop (Improvement #1 in roadmap)
 3. Resend dispatch notifications
 4. Phase 4 — Stripe Connect (`docs/STRIPE_CONNECT.md`)
