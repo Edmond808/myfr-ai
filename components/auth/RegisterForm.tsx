@@ -8,6 +8,7 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient } from "@/lib/supabase/client";
 import type { Locale } from "@/lib/types";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { OAuthButtons } from "@/components/auth/OAuthButtons";
 
 export function RegisterForm() {
   const { t, locale, setLocale } = useLocale();
@@ -87,6 +88,8 @@ export function RegisterForm() {
       <div className="flex justify-end">
         <LanguageSwitcher />
       </div>
+
+      <OAuthButtons next={next} />
 
       <div>
         <label className="block text-sm mb-1 font-medium">{t.auth.fullName}</label>

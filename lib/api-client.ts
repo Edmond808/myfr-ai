@@ -35,3 +35,19 @@ export async function dispatchJobClient(payload: {
 
   return response.json() as Promise<{ jobId: string; dispatched: number }>;
 }
+
+export async function acceptQuoteClient(payload: {
+  jobId: string;
+  quoteId: string;
+}): Promise<void> {
+  const response = await fetch("/api/jobs", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const err = (await response.json().catch(() => ({}))) as { error?: string };
+    throw new Error(err.error ?? "Accept quote failed");
+  }
+}

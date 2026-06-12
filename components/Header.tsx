@@ -2,20 +2,29 @@
 
 import Link from "next/link";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { UserMenu } from "./UserMenu";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PALETTE } from "@/lib/constants";
 
 interface HeaderProps {
   onReset: () => void;
   userEmail?: string | null;
+  userDisplayName?: string | null;
+  userInitial?: string | null;
   onLogout?: () => void;
 }
 
-export function Header({ onReset, userEmail, onLogout }: HeaderProps) {
+export function Header({
+  onReset,
+  userEmail,
+  userDisplayName,
+  userInitial,
+  onLogout,
+}: HeaderProps) {
   const { t } = useLocale();
 
   return (
-    <header className="flex items-center justify-between gap-4 px-6 py-5 max-w-5xl mx-auto flex-wrap">
+    <header className="glass-rivly-strong sticky top-0 z-40 flex items-center justify-between gap-4 px-6 py-5 max-w-5xl mx-auto flex-wrap border-b border-white/50">
       <button
         onClick={onReset}
         className="flex items-center gap-2"
@@ -43,20 +52,13 @@ export function Header({ onReset, userEmail, onLogout }: HeaderProps) {
         <span className="text-sm hidden sm:inline" style={{ color: PALETTE.azure, fontWeight: 500 }}>
           {t.tagline}
         </span>
-        {userEmail ? (
-          <div className="flex items-center gap-2 text-sm" style={{ color: PALETTE.navy }}>
-            <span className="max-w-[140px] truncate">{userEmail}</span>
-            {onLogout && (
-              <button
-                type="button"
-                onClick={onLogout}
-                className="underline"
-                style={{ color: PALETTE.azure }}
-              >
-                {t.auth.logout}
-              </button>
-            )}
-          </div>
+        {userEmail && userDisplayName && userInitial ? (
+          <UserMenu
+            displayName={userDisplayName}
+            initial={userInitial}
+            email={userEmail}
+            onLogout={onLogout}
+          />
         ) : (
           <div className="flex items-center gap-2 text-sm">
             <Link href="/pro" style={{ color: PALETTE.azure, fontWeight: 500 }}>

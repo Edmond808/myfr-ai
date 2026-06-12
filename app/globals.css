@@ -6,4 +6,280 @@
 
 body {
   margin: 0;
+  background: #c5dde9;
+}
+
+/* ── Alive v1 — Mediterranean night-at-dawn shell ── */
+
+.rivly-shell {
+  min-height: 100vh;
+  color: #10324a;
+  font-family: var(--font-inter), -apple-system, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(43, 134, 188, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 60% at 100% 50%, rgba(226, 153, 47, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 50% at 0% 80%, rgba(72, 160, 170, 0.22) 0%, transparent 45%),
+    linear-gradient(165deg, #dceaf2 0%, #c5dde9 38%, #b8d4e3 62%, #d4e8f0 100%);
+}
+
+/* ── Alive v1 motion system ── */
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 15px) scale(0.95);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  70% {
+    transform: scale(1.02) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes sheen {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes sonar {
+  0% {
+    box-shadow: 0 0 0 0 rgba(43, 134, 188, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(43, 134, 188, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(43, 134, 188, 0);
+  }
+}
+
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px) saturate(1.6);
+  opacity: 0.72;
+  animation: drift 22s ease-in-out infinite;
+  mix-blend-mode: multiply;
+}
+
+.ambient-blob--azure {
+  width: min(680px, 90vw);
+  height: min(680px, 90vw);
+  top: -18%;
+  right: -12%;
+  background: radial-gradient(circle, rgba(43, 134, 188, 0.85) 0%, rgba(43, 134, 188, 0.25) 45%, transparent 72%);
+  animation-duration: 24s;
+}
+
+.ambient-blob--teal {
+  width: min(560px, 75vw);
+  height: min(560px, 75vw);
+  bottom: 5%;
+  left: -15%;
+  background: radial-gradient(circle, rgba(72, 160, 170, 0.75) 0%, rgba(72, 160, 170, 0.2) 45%, transparent 72%);
+  animation-duration: 28s;
+  animation-delay: -8s;
+}
+
+.ambient-blob--amber {
+  width: min(440px, 60vw);
+  height: min(440px, 60vw);
+  top: 28%;
+  left: 38%;
+  background: radial-gradient(circle, rgba(226, 153, 47, 0.7) 0%, rgba(226, 153, 47, 0.18) 45%, transparent 72%);
+  animation-duration: 20s;
+  animation-delay: -14s;
+}
+
+.ambient-blob--navy {
+  width: min(520px, 70vw);
+  height: min(520px, 70vw);
+  top: 55%;
+  right: 10%;
+  background: radial-gradient(circle, rgba(16, 50, 74, 0.35) 0%, rgba(16, 50, 74, 0.08) 50%, transparent 72%);
+  animation-duration: 32s;
+  animation-delay: -20s;
+}
+
+.ambient-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 100% 80% at 50% 0%, rgba(16, 50, 74, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(16, 50, 74, 0.06) 0%, transparent 30%, transparent 70%, rgba(16, 50, 74, 0.1) 100%);
+}
+
+.ambient-horizon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(43, 134, 188, 0.35) 25%,
+    rgba(226, 153, 47, 0.3) 55%,
+    rgba(43, 134, 188, 0.35) 75%,
+    transparent
+  );
+  box-shadow: 0 0 24px rgba(43, 134, 188, 0.2);
+}
+
+.glass-rivly {
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 12px 40px rgba(16, 50, 74, 0.12),
+    0 2px 8px rgba(43, 134, 188, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(16, 50, 74, 0.04);
+}
+
+.glass-rivly-strong {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(2);
+  -webkit-backdrop-filter: blur(28px) saturate(2);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 16px 48px rgba(16, 50, 74, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.hero-glow {
+  position: absolute;
+  top: -40px;
+  left: -20px;
+  right: -20px;
+  height: 220px;
+  background: radial-gradient(ellipse 70% 100% at 30% 0%, rgba(43, 134, 188, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.reveal {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-d1 {
+  animation-delay: 0.08s;
+}
+.reveal-d2 {
+  animation-delay: 0.18s;
+}
+.reveal-d3 {
+  animation-delay: 0.28s;
+}
+.reveal-d4 {
+  animation-delay: 0.38s;
+}
+
+.lift-hover {
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease;
+}
+
+.lift-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(16, 50, 74, 0.1);
+}
+
+.sheen-cta {
+  position: relative;
+  overflow: hidden;
+}
+
+.sheen-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: sheen 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.pop-in {
+  animation: pop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sonar-dot {
+  animation: sonar 1.8s ease-out infinite;
+}
+
+.title-accent {
+  background: linear-gradient(120deg, #10324a 0%, #2b86bc 55%, #e2992f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.4));
+}
+
+.hero-title {
+  font-family: var(--font-fraunces), serif;
+  font-size: clamp(42px, 8vw, 72px);
+  line-height: 1.02;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 24px rgba(16, 50, 74, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-blob,
+  .reveal,
+  .pop-in,
+  .sheen-cta::after,
+  .sonar-dot {
+    animation: none !important;
+  }
+
+  .lift-hover:hover {
+    transform: none;
+  }
 }

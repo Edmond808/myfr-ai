@@ -142,6 +142,10 @@ create policy "customer reads quotes" on quotes
   for select using (
     exists (select 1 from jobs where jobs.id = quotes.job_id and jobs.customer_id = auth.uid())
   );
+create policy "customer accepts quotes" on quotes
+  for update using (
+    exists (select 1 from jobs where jobs.id = quotes.job_id and jobs.customer_id = auth.uid())
+  );
 create policy "merchant own quotes" on quotes
   for all using (
     exists (select 1 from merchants where merchants.id = quotes.merchant_id and merchants.owner_id = auth.uid())

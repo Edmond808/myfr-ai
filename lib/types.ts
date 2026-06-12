@@ -56,6 +56,8 @@ export interface UserProfile {
 
 export type MerchantStatus = "applied" | "under_review" | "verified" | "suspended";
 
+export const URGENCIES: Urgency[] = ["today", "this_week", "flexible"];
+
 export const CATEGORIES: Category[] = [
   "groceries",
   "housekeeping",

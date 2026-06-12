@@ -2,11 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
+import { acceptQuoteClient, classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
+import {
+  displayNameFromUser,
+  initialFromName,
+  syncProfileFromAuth,
+} from "@/lib/auth/profile-sync";
 import {
   BASE_PRICE,
   DEMO_MERCHANTS,
-  PALETTE,
 } from "@/lib/constants";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
@@ -17,6 +21,7 @@ import type {
   Quote,
   View,
 } from "@/lib/types";
+import { AmbientBackground } from "./AmbientBackground";
 import { DispatchView } from "./DispatchView";
 import { Header } from "./Header";
 import { HomeView } from "./HomeView";
@@ -37,8 +42,12 @@ export function RivlyApp() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [accepted, setAccepted] = useState<Quote | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
+  const [userInitial, setUserInitial] = useState<string | null>(null);
+  const [acceptingQuoteId, setAcceptingQuoteId] = useState<string | null>(null);
   const [merchantCount, setMerchantCount] = useState(3);
   const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const channelCleanup = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     let i = 0;
@@ -51,18 +60,56 @@ export function RivlyApp() {
 
   useEffect(() => () => timeouts.current.forEach(clearTimeout), []);
 
-  useEffect(() => {
+  useEffect(
+    () => () => {
+      channelCleanup.current?.();
+      channelCleanup.current = null;
+    },
+    [],
+  );
+
+  const refreshUserProfile = async () => {
     if (!isSupabaseConfigured()) return;
 
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setUserEmail(data.user?.email ?? null);
-    });
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
 
+    if (!user) {
+      setUserEmail(null);
+      setUserDisplayName(null);
+      setUserInitial(null);
+      return;
+    }
+
+    setUserEmail(user.email ?? null);
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name, preferred_language")
+      .eq("id", user.id)
+      .single();
+
+    const preferred = await syncProfileFromAuth(supabase, user);
+    if (preferred) {
+      localStorage.setItem("rivly-locale", preferred);
+    }
+
+    const name = displayNameFromUser(user, profile);
+    setUserDisplayName(name);
+    setUserInitial(initialFromName(name));
+  };
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
+    refreshUserProfile();
+
+    const supabase = createClient();
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserEmail(session?.user?.email ?? null);
+    } = supabase.auth.onAuthStateChange(() => {
+      refreshUserProfile();
     });
 
     return () => subscription.unsubscribe();
@@ -192,14 +239,17 @@ export function RivlyApp() {
           classification: req.classification,
         });
         setJobId(id);
-        setMerchantCount(dispatched);
 
         if (dispatched === 0) {
-          simulateDemoQuotes(req.classification);
+          setQuotes([]);
+          setMerchantCount(0);
           return;
         }
 
-        subscribeToQuotes(id);
+        setMerchantCount(dispatched);
+
+        channelCleanup.current?.();
+        channelCleanup.current = subscribeToQuotes(id) ?? null;
         const res = await fetch(`/api/jobs?jobId=${id}`);
         if (res.ok) {
           const data = await res.json();
@@ -280,6 +330,8 @@ export function RivlyApp() {
 
   const reset = () => {
     clearTimeouts();
+    channelCleanup.current?.();
+    channelCleanup.current = null;
     setView("home");
     setText("");
     setJob(null);
@@ -294,29 +346,46 @@ export function RivlyApp() {
     setError(null);
   };
 
+  const handleAcceptQuote = async (quote: Quote) => {
+    if (!quote.id || !jobId) {
+      setAccepted(quote);
+      return;
+    }
+
+    setAcceptingQuoteId(quote.id);
+    try {
+      await acceptQuoteClient({ jobId, quoteId: quote.id });
+      setAccepted(quote);
+    } catch {
+      setError(t.dispatch.acceptQuoteError);
+    } finally {
+      setAcceptingQuoteId(null);
+    }
+  };
+
   const handleLogout = async () => {
     if (!isSupabaseConfigured()) return;
     const supabase = createClient();
     await supabase.auth.signOut();
     setUserEmail(null);
+    setUserDisplayName(null);
+    setUserInitial(null);
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: PALETTE.bg,
-        color: PALETTE.navy,
-        fontFamily: "var(--font-inter), -apple-system, 'Segoe UI', sans-serif",
-      }}
-    >
-      <Header
-        onReset={reset}
-        userEmail={userEmail}
-        onLogout={handleLogout}
-      />
+    <div className="rivly-shell relative">
+      <AmbientBackground />
 
-      {view === "home" && (
+      <div className="relative z-10">
+        <Header
+          onReset={reset}
+          userEmail={userEmail}
+          userDisplayName={userDisplayName}
+          userInitial={userInitial}
+          onLogout={handleLogout}
+        />
+
+        {view === "home" && (
         <HomeView
           text={text}
           location={location}
@@ -330,16 +399,18 @@ export function RivlyApp() {
         />
       )}
 
-      {view === "dispatch" && job && (
-        <DispatchView
-          job={job}
-          quotes={quotes}
-          accepted={accepted}
-          merchantCount={merchantCount}
-          onReset={reset}
-          onAccept={setAccepted}
-        />
-      )}
+        {view === "dispatch" && job && (
+          <DispatchView
+            job={job}
+            quotes={quotes}
+            accepted={accepted}
+            merchantCount={merchantCount}
+            onReset={reset}
+            onAccept={handleAcceptQuote}
+            acceptingQuoteId={acceptingQuoteId}
+          />
+        )}
+      </div>
     </div>
   );
 }

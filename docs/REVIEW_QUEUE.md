@@ -4,11 +4,15 @@
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [cursor/phase-3-merchant] — Phase 3 merchant side: `/pro` signup (status `applied`), `/pro/dashboard` job feed + quote submit, RLS patches in `schema.sql`, `scripts/verify-merchant.sql`. Needs: Claude review of merchant API routes + RLS policies. TODO: Resend email notifications (Phase 3 item 3).
+- [2026-06-12] [CURSOR] [main] — **User action:** Run `supabase/migrations/002_accept_quote.sql` in Supabase SQL editor. Configure OAuth providers per `docs/SUPABASE_AUTH.md`.
+
+- [2026-06-12] [CURSOR] [main] — Phase 3 item 3 still open: Resend email notifications on merchant dispatch.
+
+- [2026-06-12] [CURSOR] [main] — **User action:** Enable branch protection on `main` (require CI + 1 review). See `docs/PR_REVIEW_AND_ROADMAP.md` Part 4.
 
 ## Claude reviews
 
-_(Pending: review merchant_job_feed RLS + quote submit flow on `cursor/phase-3-merchant`)_
+- [2026-06-12] [CLAUDE] — Reviewed PRs #2/#3; handoff at `docs/PR_REVIEW_AND_ROADMAP.md`. Fixes A–E applied on `cursor/phase-3-oauth-journey` before merge.
 
 ## Completed
 
@@ -18,7 +22,13 @@ _(Pending: review merchant_job_feed RLS + quote submit flow on `cursor/phase-3-m
 - [2026-06-12] VoiceInput — Web Speech API with interim preview, EN/FR locale
 - [2026-06-12] `npm run build` passes (Next.js 15.5.19)
 - [2026-06-12] [main @ bb35594] — Phase 1-2 pushed to GitHub: Next.js + Supabase schema/API, auth (register/login), EN/FR i18n, VoiceInput
+- [2026-06-12] [main @ 4ea7bc9] — Phase 3 merchant signup/dashboard merged (PR #1)
+- [2026-06-12] [cursor/phase-3-oauth-journey] — Claude review fixes: atomic `accept_quote` RPC, realtime channel cleanup, honest empty state, OAuth redirect hardening, POST /api/jobs validation + rate limit, GitHub Actions CI
+- [2026-06-12] PR #3 merged (OAuth + journey + alive-v1 design). PR #2 closed (superseded by #3).
 
-## Next (do not start until review)
+## Next
 
-- Phase 4 — Stripe Connect (commission + escrow)
+1. Run migration `002_accept_quote.sql` in Supabase
+2. Job completion loop (Improvement #1 in roadmap)
+3. Resend dispatch notifications
+4. Phase 4 — Stripe Connect (`docs/STRIPE_CONNECT.md`)

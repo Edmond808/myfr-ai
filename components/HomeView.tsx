@@ -39,31 +39,21 @@ export function HomeView({
   };
 
   return (
-    <main className="max-w-3xl mx-auto px-6 pt-10 pb-20">
-      <h1
-        style={{
-          fontFamily: "var(--font-fraunces), serif",
-          fontSize: "clamp(34px, 6vw, 56px)",
-          lineHeight: 1.08,
-          fontWeight: 500,
-        }}
-      >
+    <main className="relative max-w-3xl mx-auto px-6 pt-14 pb-20">
+      <div className="hero-glow" aria-hidden="true" />
+      <h1 className="hero-title reveal">
         {t.home.title1}
         <br />
-        {t.home.title2}
+        <span className="title-accent">{t.home.title2}</span>
       </h1>
-      <p className="mt-4 text-lg" style={{ color: "#3D6075", maxWidth: 520 }}>
+      <p
+        className="reveal reveal-d1 mt-5 text-xl"
+        style={{ color: "#2a5068", maxWidth: 540, lineHeight: 1.55 }}
+      >
         {t.home.subtitle}
       </p>
 
-      <div
-        className="mt-8 rounded-2xl p-2"
-        style={{
-          background: PALETTE.white,
-          border: `1px solid ${PALETTE.line}`,
-          boxShadow: "0 8px 32px rgba(16,50,74,0.08)",
-        }}
-      >
+      <div className="reveal reveal-d2 glass-rivly-strong mt-10 rounded-2xl p-2">
         <textarea
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
@@ -117,7 +107,7 @@ export function HomeView({
               type="button"
               onClick={onSubmit}
               disabled={loading || !text.trim()}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-base"
+              className="sheen-cta flex items-center gap-2 px-5 py-2.5 rounded-xl text-base"
               style={{
                 background: loading || !text.trim() ? "#9DBED1" : PALETTE.azure,
                 color: PALETTE.white,
@@ -141,7 +131,7 @@ export function HomeView({
         </p>
       )}
 
-      <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="reveal reveal-d3 mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3">
         {(Object.keys(CATEGORY_ICONS) as Category[]).map((key) => {
           const Icon = CATEGORY_ICONS[key];
           return (
@@ -149,11 +139,7 @@ export function HomeView({
               key={key}
               type="button"
               onClick={() => onCategoryClick(key)}
-              className="rounded-xl px-4 py-3 flex items-center gap-3 text-left transition-shadow hover:shadow-md"
-              style={{
-                background: PALETTE.white,
-                border: `1px solid ${PALETTE.line}`,
-              }}
+              className="glass-rivly lift-hover rounded-xl px-4 py-3 flex items-center gap-3 text-left"
             >
               <Icon size={18} style={{ color: PALETTE.azure }} />
               <span className="text-sm" style={{ fontWeight: 500 }}>
@@ -164,10 +150,10 @@ export function HomeView({
         })}
       </div>
 
-      <p className="mt-10 text-sm" style={{ color: "#5C7E92" }}>
+      <p className="reveal reveal-d4 mt-10 text-sm" style={{ color: "#5C7E92" }}>
         {t.home.howItWorks}
       </p>
-      <p className="mt-2 text-xs" style={{ color: "#8AA8B8" }}>
+      <p className="reveal reveal-d4 mt-2 text-xs" style={{ color: "#8AA8B8" }}>
         {t.home.tip}
       </p>
     </main>

@@ -38,6 +38,11 @@ export const messages: Messages = {
     continueToDispatch: "Continuer vers le dispatch",
     language: "Langue préférée",
     defaultLocation: "Ville par défaut",
+    continueWithGoogle: "Continuer avec Google",
+    continueWithApple: "Continuer avec Apple",
+    orEmail: "ou continuer avec l'e-mail",
+    oauthError: "Impossible de démarrer la connexion. Réessayez.",
+    oauthRedirecting: "Redirection…",
   },
   dispatch: {
     newRequest: "Nouvelle demande",
@@ -49,6 +54,8 @@ export const messages: Messages = {
     quotesIn: "devis reçus",
     quoting: "Devis en cours…",
     acceptQuote: "Accepter le devis",
+    acceptingQuote: "Acceptation…",
+    acceptQuoteError: "Impossible d'accepter le devis. Réessayez.",
     quoteAccepted: "Devis accepté — paiement en séquestre",
     confirmedFor: "est confirmé pour",
     escrowNote:
