@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/classify";
-import type { JobClassification } from "@/lib/types";
+import { CATEGORIES, URGENCIES, type JobClassification } from "@/lib/types";
+
+const MAX_RAW_REQUEST = 2000;
+const MAX_TITLE = 200;
+const MAX_SUMMARY = 1000;
+const MAX_LOCATION = 100;
+const MAX_CLARIFYING = 500;
+const JOBS_PER_HOUR = 5;
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured()) {
@@ -25,6 +32,42 @@ export async function POST(request: Request) {
       rawRequest: string;
       classification: JobClassification;
     };
+
+    if (
+      typeof rawRequest !== "string" ||
+      rawRequest.length === 0 ||
+      rawRequest.length > MAX_RAW_REQUEST
+    ) {
+      return NextResponse.json({ error: "Invalid request text" }, { status: 400 });
+    }
+
+    if (
+      !classification ||
+      !CATEGORIES.includes(classification.category) ||
+      !URGENCIES.includes(classification.urgency) ||
+      typeof classification.title !== "string" ||
+      classification.title.length > MAX_TITLE ||
+      typeof classification.summary !== "string" ||
+      classification.summary.length > MAX_SUMMARY ||
+      typeof classification.location !== "string" ||
+      classification.location.length > MAX_LOCATION ||
+      (classification.clarifying_question != null &&
+        (typeof classification.clarifying_question !== "string" ||
+          classification.clarifying_question.length > MAX_CLARIFYING))
+    ) {
+      return NextResponse.json({ error: "Invalid classification" }, { status: 400 });
+    }
+
+    const since = new Date(Date.now() - 3600_000).toISOString();
+    const { count } = await supabase
+      .from("jobs")
+      .select("id", { count: "exact", head: true })
+      .eq("customer_id", user.id)
+      .gte("created_at", since);
+
+    if ((count ?? 0) >= JOBS_PER_HOUR) {
+      return NextResponse.json({ error: "Rate limit" }, { status: 429 });
+    }
 
     const { data: job, error: jobError } = await supabase
       .from("jobs")
@@ -143,64 +186,17 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const { data: job, error: jobError } = await supabase
-      .from("jobs")
-      .select("id, customer_id")
-      .eq("id", jobId)
-      .single();
-
-    if (jobError || !job) {
-      return NextResponse.json({ error: "Job not found" }, { status: 404 });
-    }
-
-    if (job.customer_id !== user.id) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-
-    const { data: quote, error: quoteError } = await supabase
-      .from("quotes")
-      .select("id, job_id, status, price_eur")
-      .eq("id", quoteId)
-      .eq("job_id", jobId)
-      .single();
-
-    if (quoteError || !quote) {
-      return NextResponse.json({ error: "Quote not found" }, { status: 404 });
-    }
-
-    if (quote.status !== "submitted" || !quote.price_eur) {
-      return NextResponse.json(
-        { error: "Quote is not ready to accept" },
-        { status: 400 },
-      );
-    }
-
-    const { error: acceptError } = await supabase
-      .from("quotes")
-      .update({ status: "accepted" })
-      .eq("id", quoteId);
+    const { error: acceptError } = await supabase.rpc("accept_quote", {
+      p_job_id: jobId,
+      p_quote_id: quoteId,
+    });
 
     if (acceptError) {
-      throw new Error(acceptError.message);
-    }
-
-    await supabase
-      .from("quotes")
-      .update({ status: "rejected" })
-      .eq("job_id", jobId)
-      .neq("id", quoteId)
-      .in("status", ["pending", "submitted"]);
-
-    const { error: jobUpdateError } = await supabase
-      .from("jobs")
-      .update({
-        accepted_quote_id: quoteId,
-        status: "accepted",
-      })
-      .eq("id", jobId);
-
-    if (jobUpdateError) {
-      throw new Error(jobUpdateError.message);
+      const msg = acceptError.message;
+      if (msg.includes("job not acceptable") || msg.includes("quote not acceptable")) {
+        return NextResponse.json({ error: msg }, { status: 400 });
+      }
+      throw new Error(msg);
     }
 
     return NextResponse.json({ ok: true, quoteId, jobId });

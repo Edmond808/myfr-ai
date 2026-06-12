@@ -47,6 +47,7 @@ export function RivlyApp() {
   const [acceptingQuoteId, setAcceptingQuoteId] = useState<string | null>(null);
   const [merchantCount, setMerchantCount] = useState(3);
   const timeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const channelCleanup = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     let i = 0;
@@ -58,6 +59,14 @@ export function RivlyApp() {
   }, [t.examples]);
 
   useEffect(() => () => timeouts.current.forEach(clearTimeout), []);
+
+  useEffect(
+    () => () => {
+      channelCleanup.current?.();
+      channelCleanup.current = null;
+    },
+    [],
+  );
 
   const refreshUserProfile = async () => {
     if (!isSupabaseConfigured()) return;
@@ -230,9 +239,17 @@ export function RivlyApp() {
           classification: req.classification,
         });
         setJobId(id);
+
+        if (dispatched === 0) {
+          setQuotes([]);
+          setMerchantCount(0);
+          return;
+        }
+
         setMerchantCount(dispatched);
 
-        subscribeToQuotes(id);
+        channelCleanup.current?.();
+        channelCleanup.current = subscribeToQuotes(id) ?? null;
         const res = await fetch(`/api/jobs?jobId=${id}`);
         if (res.ok) {
           const data = await res.json();
@@ -313,6 +330,8 @@ export function RivlyApp() {
 
   const reset = () => {
     clearTimeouts();
+    channelCleanup.current?.();
+    channelCleanup.current = null;
     setView("home");
     setText("");
     setJob(null);

@@ -4,17 +4,15 @@
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [cursor/phase-3-oauth-journey] — OAuth (Google/Apple), alive-v1 auth polish, user menu, quote acceptance API, demo-quote fix, Phase 4 Stripe stubs. Needs: Claude review + Supabase dashboard OAuth setup per `docs/SUPABASE_AUTH.md`. Run new `customer accepts quotes` RLS policy in Supabase SQL editor.
+- [2026-06-12] [CURSOR] [main] — **User action:** Run `supabase/migrations/002_accept_quote.sql` in Supabase SQL editor. Configure OAuth providers per `docs/SUPABASE_AUTH.md`.
 
-- [2026-06-12] [CURSOR] [design/alive-v1] — **Alive v1 amplified** — PR #2 open. Needs: visual sign-off on localhost:3000 before merge to main.
+- [2026-06-12] [CURSOR] [main] — Phase 3 item 3 still open: Resend email notifications on merchant dispatch.
 
-- [2026-06-12] [CURSOR] [cursor/phase-3-merchant] — Phase 3 merchant side merged to main (PR #1). TODO: Resend email notifications (Phase 3 item 3).
+- [2026-06-12] [CURSOR] [main] — **User action:** Enable branch protection on `main` (require CI + 1 review). See `docs/PR_REVIEW_AND_ROADMAP.md` Part 4.
 
 ## Claude reviews
 
-_(Pending: review OAuth callback + `PATCH /api/jobs` quote acceptance on `cursor/phase-3-oauth-journey`)_
-
-_(Pending: review merchant_job_feed RLS + quote submit flow on `main`)_
+- [2026-06-12] [CLAUDE] — Reviewed PRs #2/#3; handoff at `docs/PR_REVIEW_AND_ROADMAP.md`. Fixes A–E applied on `cursor/phase-3-oauth-journey` before merge.
 
 ## Completed
 
@@ -25,10 +23,12 @@ _(Pending: review merchant_job_feed RLS + quote submit flow on `main`)_
 - [2026-06-12] `npm run build` passes (Next.js 15.5.19)
 - [2026-06-12] [main @ bb35594] — Phase 1-2 pushed to GitHub: Next.js + Supabase schema/API, auth (register/login), EN/FR i18n, VoiceInput
 - [2026-06-12] [main @ 4ea7bc9] — Phase 3 merchant signup/dashboard merged (PR #1)
-- [2026-06-12] [cursor/phase-3-oauth-journey] — **Blockers fixed:** quote acceptance persisted via `PATCH /api/jobs`; demo quotes only when Supabase unavailable or dispatch API fails (not when `dispatched === 0`)
+- [2026-06-12] [cursor/phase-3-oauth-journey] — Claude review fixes: atomic `accept_quote` RPC, realtime channel cleanup, honest empty state, OAuth redirect hardening, POST /api/jobs validation + rate limit, GitHub Actions CI
+- [2026-06-12] PR #3 merged (OAuth + journey + alive-v1 design). PR #2 closed (superseded by #3).
 
 ## Next
 
-- Phase 4 — Stripe Connect (`docs/STRIPE_CONNECT.md` scaffold ready; no keys required yet)
-- Merge `design/alive-v1` → `main` after visual sign-off
-- Resend notifications for merchant dispatches
+1. Run migration `002_accept_quote.sql` in Supabase
+2. Job completion loop (Improvement #1 in roadmap)
+3. Resend dispatch notifications
+4. Phase 4 — Stripe Connect (`docs/STRIPE_CONNECT.md`)
