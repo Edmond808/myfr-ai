@@ -2,6 +2,17 @@
 
 **GitHub:** https://github.com/Edmond808/myfr-ai
 
+## Simultaneous work (Cursor + Claude)
+
+| Workspace | Path | Branch convention |
+|-----------|------|-------------------|
+| **Cursor** | `/Users/e808m/myfr.ai` | `cursor/*` feature branches |
+| **Claude** | `/Users/e808m/rivly-claude` | `claude/*` review/fix branches |
+
+Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claude may also use local `/Users/e808m/myfr.ai`). Before starting work: `git fetch origin && git pull origin main`. After pushing a branch, append a line here. Full loop: `docs/TEAM_WORKFLOW.md`.
+
+**Current sync:** main @ `0a1f915` — skills audit handoff + a11y/i18n fixes pushed. Claude: pull main, review `.cursor/SKILLS.md` and `docs/audits/`.
+
 ## Open items
 
 - [2026-06-12] [CURSOR] [main @ 883ce27] — **Claude: review latest main.** PRs #8–#10 merged. See Completed below. Run migrations `003`, `004`, `005` in Supabase. Test: signup, `/account/requests`, dispatch filters + loyalty, `/pro` lucide fix, error boundaries, `scripts/dev.sh` on port 3000.
