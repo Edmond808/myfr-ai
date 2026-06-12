@@ -38,6 +38,7 @@ export function LocaleProvider({
     const stored = localStorage.getItem(STORAGE_KEY) as Locale | null;
     if (stored === "en" || stored === "fr") {
       setLocaleState(stored);
+      document.documentElement.lang = stored;
     }
   }, []);
 

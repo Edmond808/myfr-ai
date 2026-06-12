@@ -133,8 +133,9 @@ function JobCard({
           <p className="text-sm font-medium">{t.pro.quoteForm}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm mb-1">{t.pro.priceEur}</label>
+              <label htmlFor={`quote-price-${job.quote_id}`} className="block text-sm mb-1">{t.pro.priceEur}</label>
               <input
+                id={`quote-price-${job.quote_id}`}
                 type="number"
                 required
                 min={1}
@@ -146,8 +147,9 @@ function JobCard({
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-sm mb-1">{t.pro.message}</label>
+              <label htmlFor={`quote-message-${job.quote_id}`} className="block text-sm mb-1">{t.pro.message}</label>
               <textarea
+                id={`quote-message-${job.quote_id}`}
                 required
                 rows={3}
                 value={message}

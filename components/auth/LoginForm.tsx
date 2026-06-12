@@ -62,8 +62,9 @@ export function LoginForm() {
       <OAuthButtons next={next} />
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.email}</label>
+        <label htmlFor="login-email" className="block text-sm mb-1 font-medium">{t.auth.email}</label>
         <input
+          id="login-email"
           type="email"
           required
           value={email}
@@ -74,8 +75,9 @@ export function LoginForm() {
       </div>
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.password}</label>
+        <label htmlFor="login-password" className="block text-sm mb-1 font-medium">{t.auth.password}</label>
         <input
+          id="login-password"
           type="password"
           required
           value={password}

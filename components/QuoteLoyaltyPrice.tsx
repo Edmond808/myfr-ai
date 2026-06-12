@@ -6,7 +6,6 @@ import { PALETTE } from "@/lib/constants";
 import {
   computeLoyaltyPricing,
   LOYALTY_TIERS,
-  tierBadgeLabel,
   type LoyaltyTier,
 } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -34,7 +33,14 @@ export function QuoteLoyaltyPrice({
 }: QuoteLoyaltyPriceProps) {
   const { t } = useLocale();
   const pricing = computeLoyaltyPricing(listPrice, loyaltyTier, isLoggedIn);
-  const tierLabel = tierBadgeLabel(pricing.displayTier) ?? LOYALTY_TIERS[pricing.displayTier].name;
+  const tierLabel =
+    pricing.displayTier === 1
+      ? t.loyalty.tierAzur
+      : pricing.displayTier === 2
+        ? t.loyalty.tierCote
+        : pricing.displayTier === 3
+          ? t.loyalty.tierPrestige
+          : "";
 
   return (
     <div className="flex flex-col items-end gap-1.5">

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { BrandWordmark } from "./BrandWordmark";
-import { BRAND_TAGLINE, PALETTE } from "@/lib/constants";
+import { PALETTE } from "@/lib/constants";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 const SPLASH_HOLD_MS = 1600;
 const SPLASH_FADE_MS = 450;
@@ -13,6 +14,7 @@ interface LoadingSplashProps {
 }
 
 export function LoadingSplash({ onComplete }: LoadingSplashProps) {
+  const { t } = useLocale();
   const [phase, setPhase] = useState<"enter" | "hold" | "exit">("enter");
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -45,7 +47,7 @@ export function LoadingSplash({ onComplete }: LoadingSplashProps) {
       <div className="splash-brand">
         <BrandWordmark size="lg" animate={!reducedMotion} className="splash-wordmark-size" />
         <p className="splash-tagline" style={{ color: PALETTE.navy }}>
-          {BRAND_TAGLINE}
+          {t.tagline}
         </p>
       </div>
     </div>

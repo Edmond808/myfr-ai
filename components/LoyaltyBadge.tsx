@@ -1,7 +1,8 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { tierBadgeColors, tierBadgeLabel, type LoyaltyTier } from "@/lib/loyalty";
+import { tierBadgeColors, type LoyaltyTier } from "@/lib/loyalty";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface LoyaltyBadgeProps {
   tier: LoyaltyTier;
@@ -9,8 +10,22 @@ interface LoyaltyBadgeProps {
   showClub?: boolean;
 }
 
+function tierLabel(tier: LoyaltyTier, t: ReturnType<typeof useLocale>["t"]): string | null {
+  switch (tier) {
+    case 1:
+      return t.loyalty.tierAzur;
+    case 2:
+      return t.loyalty.tierCote;
+    case 3:
+      return t.loyalty.tierPrestige;
+    default:
+      return null;
+  }
+}
+
 export function LoyaltyBadge({ tier, size = "md", showClub = false }: LoyaltyBadgeProps) {
-  const label = tierBadgeLabel(tier);
+  const { t } = useLocale();
+  const label = tierLabel(tier, t);
   if (!label) return null;
 
   const colors = tierBadgeColors(tier);
@@ -28,7 +43,7 @@ export function LoyaltyBadge({ tier, size = "md", showClub = false }: LoyaltyBad
       }}
     >
       <Sparkles size={isSm ? 10 : 12} style={{ opacity: 0.85 }} />
-      {showClub ? `Riviera Club · ${label}` : label}
+      {showClub ? `${t.loyalty.clubName} · ${label}` : label}
     </span>
   );
 }

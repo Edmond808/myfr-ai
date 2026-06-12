@@ -96,8 +96,9 @@ export function RegisterForm() {
       <OAuthButtons next={next} />
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.fullName}</label>
+        <label htmlFor="register-full-name" className="block text-sm mb-1 font-medium">{t.auth.fullName}</label>
         <input
+          id="register-full-name"
           type="text"
           required
           value={fullName}
@@ -108,8 +109,9 @@ export function RegisterForm() {
       </div>
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.email}</label>
+        <label htmlFor="register-email" className="block text-sm mb-1 font-medium">{t.auth.email}</label>
         <input
+          id="register-email"
           type="email"
           required
           value={email}
@@ -120,8 +122,9 @@ export function RegisterForm() {
       </div>
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.password}</label>
+        <label htmlFor="register-password" className="block text-sm mb-1 font-medium">{t.auth.password}</label>
         <input
+          id="register-password"
           type="password"
           required
           minLength={8}
@@ -133,8 +136,9 @@ export function RegisterForm() {
       </div>
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.confirmPassword}</label>
+        <label htmlFor="register-confirm-password" className="block text-sm mb-1 font-medium">{t.auth.confirmPassword}</label>
         <input
+          id="register-confirm-password"
           type="password"
           required
           minLength={8}
@@ -146,8 +150,9 @@ export function RegisterForm() {
       </div>
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.language}</label>
+        <label htmlFor="register-language" className="block text-sm mb-1 font-medium">{t.auth.language}</label>
         <select
+          id="register-language"
           value={preferredLanguage}
           onChange={(e) => setPreferredLanguage(e.target.value as Locale)}
           className="w-full rounded-xl px-4 py-2.5 border outline-none"
@@ -159,8 +164,9 @@ export function RegisterForm() {
       </div>
 
       <div>
-        <label className="block text-sm mb-1 font-medium">{t.auth.defaultLocation}</label>
+        <label htmlFor="register-default-location" className="block text-sm mb-1 font-medium">{t.auth.defaultLocation}</label>
         <select
+          id="register-default-location"
           value={defaultLocation}
           onChange={(e) => setDefaultLocation(e.target.value)}
           className="w-full rounded-xl px-4 py-2.5 border outline-none"

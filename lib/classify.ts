@@ -1,5 +1,6 @@
 import type { Category, JobClassification, Urgency } from "./types";
 import { BRAND } from "./constants";
+import { truncateAtWordBoundary } from "./truncate-title";
 
 const CATEGORIES: Category[] = [
   "groceries",
@@ -88,7 +89,7 @@ function demoClassify(text: string, location: string): JobClassification {
 
   return {
     category,
-    title: words.length > 40 ? words.slice(0, 40) + "…" : words,
+    title: truncateAtWordBoundary(words, 40),
     summary: text.trim(),
     location: jobLocation,
     urgency,

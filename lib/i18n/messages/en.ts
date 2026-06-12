@@ -7,6 +7,7 @@ export const messages = {
     subtitle:
       "Describe it in your own words. Our AI sends it to verified local professionals — you only pay when the job is done.",
     sendRequest: "Send request",
+    requestLabel: "Describe your request",
     dispatching: "Dispatching…",
     howItWorks:
       "How it works: you describe → AI matches verified pros → you compare quotes → pay securely, money released on completion.",
@@ -90,6 +91,13 @@ export const messages = {
     sponsored: "Sponsored",
     filtersEmpty: "No quotes match your filters — try adjusting or clear filters.",
     showingQuotes: "Showing {shown} of {total}",
+    repliesInMinutes: "Replies in ~{minutes} min",
+    repliesInHour: "Replies in ~1 h",
+  },
+  errors: {
+    title: "Something went wrong",
+    body: "The page hit an unexpected error. Try again, or refresh if the problem continues.",
+    retry: "Try again",
   },
   loyalty: {
     clubName: "Riviera Club",
@@ -220,6 +228,7 @@ export type Messages = {
   home: Record<string, string>;
   auth: Record<string, string>;
   dispatch: Record<string, string>;
+  errors: Record<string, string>;
   loyalty: Record<string, string>;
   pro: Record<string, string>;
   requests: Record<string, string>;

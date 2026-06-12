@@ -37,7 +37,7 @@ function etaMinutes(quote: Quote): number {
   if (quote.merchant.responseMinutes != null) {
     return quote.merchant.responseMinutes;
   }
-  const match = quote.merchant.eta.match(/(\d+)/);
+  const match = quote.merchant.eta?.match(/(\d+)/);
   return match ? Number(match[1]) : 999;
 }
 

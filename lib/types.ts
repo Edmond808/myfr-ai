@@ -30,7 +30,7 @@ export interface Merchant {
   name: string;
   rating: number;
   jobs: number;
-  eta: string;
+  eta?: string;
   isPromoted?: boolean;
   promotionRank?: number;
   responseMinutes?: number;

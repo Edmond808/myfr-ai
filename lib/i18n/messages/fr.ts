@@ -9,6 +9,7 @@ export const messages: Messages = {
     subtitle:
       "Décrivez votre besoin en vos propres mots. Notre IA l'envoie à des professionnels locaux vérifiés — vous ne payez qu'une fois le service terminé.",
     sendRequest: "Envoyer la demande",
+    requestLabel: "Décrivez votre demande",
     dispatching: "Envoi en cours…",
     howItWorks:
       "Comment ça marche : vous décrivez → l'IA trouve des pros vérifiés → vous comparez les devis → paiement sécurisé, fonds libérés à la fin.",
@@ -93,6 +94,13 @@ export const messages: Messages = {
     sponsored: "Sponsorisé",
     filtersEmpty: "Aucun devis ne correspond — ajustez les filtres ou effacez-les.",
     showingQuotes: "{shown} sur {total} devis",
+    repliesInMinutes: "Répond en ~{minutes} min",
+    repliesInHour: "Répond en ~1 h",
+  },
+  errors: {
+    title: "Une erreur est survenue",
+    body: "La page a rencontré une erreur inattendue. Réessayez ou actualisez si le problème persiste.",
+    retry: "Réessayer",
   },
   loyalty: {
     clubName: "Riviera Club",

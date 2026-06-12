@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { acceptQuoteClient, classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
 import {
@@ -26,9 +27,13 @@ import type {
   View,
 } from "@/lib/types";
 import { AmbientBackground } from "./AmbientBackground";
-import { DispatchView } from "./DispatchView";
 import { Header } from "./Header";
 import { HomeView } from "./HomeView";
+
+const DispatchView = dynamic(
+  () => import("./DispatchView").then((m) => ({ default: m.DispatchView })),
+  { ssr: false },
+);
 
 export function RivlyApp() {
   const { t } = useLocale();

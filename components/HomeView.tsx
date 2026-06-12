@@ -55,7 +55,11 @@ export function HomeView({
       </p>
 
       <div className="reveal reveal-d2 glass-rivly-strong mt-10 rounded-2xl p-2">
+        <label htmlFor="home-request" className="sr-only">
+          {t.home.requestLabel}
+        </label>
         <textarea
+          id="home-request"
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
           placeholder={placeholder}

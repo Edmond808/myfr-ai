@@ -5,6 +5,7 @@ import { ArrowLeft, BadgeCheck, Check, Clock, MapPin, Sparkles } from "lucide-re
 import { CATEGORY_ICONS } from "@/lib/category-icons";
 import { BRAND, COMMISSION, PALETTE } from "@/lib/constants";
 import { logQuoteFiltersClient } from "@/lib/api-client";
+import { formatMerchantEta } from "@/lib/format-eta";
 import { payPrice } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import {
@@ -311,7 +312,14 @@ export function DispatchView({
                     <span>
                       {q.merchant.jobs} {t.dispatch.jobs}
                     </span>
-                    {q.merchant.eta && <span>{q.merchant.eta}</span>}
+                    {(() => {
+                      const eta = formatMerchantEta(
+                        q.merchant.responseMinutes,
+                        q.merchant.eta,
+                        t,
+                      );
+                      return eta ? <span>{eta}</span> : null;
+                    })()}
                   </div>
                   {q.message && (
                     <p className="mt-2 text-sm" style={{ color: "#3D6075" }}>
