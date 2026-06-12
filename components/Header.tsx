@@ -59,6 +59,9 @@ export function Header({ onReset, userEmail, onLogout }: HeaderProps) {
           </div>
         ) : (
           <div className="flex items-center gap-2 text-sm">
+            <Link href="/pro" style={{ color: PALETTE.azure, fontWeight: 500 }}>
+              {t.pro.forPros}
+            </Link>
             <Link href="/auth/login" style={{ color: PALETTE.azure, fontWeight: 500 }}>
               {t.auth.login}
             </Link>

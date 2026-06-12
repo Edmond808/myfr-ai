@@ -53,3 +53,46 @@ export interface UserProfile {
   preferred_language: Locale;
   default_location: string;
 }
+
+export type MerchantStatus = "applied" | "under_review" | "verified" | "suspended";
+
+export const CATEGORIES: Category[] = [
+  "groceries",
+  "housekeeping",
+  "rentals",
+  "transport",
+  "boats",
+  "handyman",
+  "events",
+  "concierge",
+];
+
+export interface MerchantRecord {
+  id: string;
+  owner_id: string;
+  business_name: string;
+  siret: string | null;
+  categories: Category[];
+  service_areas: string[];
+  status: MerchantStatus;
+  whatsapp_phone: string | null;
+  email: string | null;
+  rating: number;
+  jobs_completed: number;
+  created_at: string;
+}
+
+export interface MerchantJobFeedItem {
+  quote_id: string;
+  quote_status: string;
+  expires_at: string | null;
+  job_id: string;
+  category: Category;
+  title: string;
+  summary: string;
+  location: string;
+  urgency: Urgency;
+  budget_estimate_eur: number | null;
+  created_at: string;
+  merchant_id: string;
+}

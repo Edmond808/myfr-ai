@@ -119,7 +119,23 @@ create policy "verified merchants visible" on merchants
 -- Jobs: customer sees own jobs
 create policy "customer jobs" on jobs
   for all using (auth.uid() = customer_id);
--- Merchants see jobs only via quotes dispatched to them (handled by view below)
+-- Merchants read jobs dispatched to them via pending/submitted quotes
+create policy "merchant reads dispatched jobs" on jobs
+  for select using (
+    exists (
+      select 1 from quotes q
+      join merchants m on m.id = q.merchant_id
+      where q.job_id = jobs.id and m.owner_id = auth.uid()
+    )
+  );
+create policy "merchant updates dispatched job" on jobs
+  for update using (
+    exists (
+      select 1 from quotes q
+      join merchants m on m.id = q.merchant_id
+      where q.job_id = jobs.id and m.owner_id = auth.uid()
+    )
+  );
 
 -- Quotes: customer sees quotes on own jobs; merchant sees/updates own quotes
 create policy "customer reads quotes" on quotes
