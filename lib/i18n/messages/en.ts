@@ -208,6 +208,7 @@ export const messages = {
     statusDisputed: "Disputed",
     statusCancelled: "Cancelled",
     loginRequired: "Sign in to view your requests.",
+    loadError: "Could not load your requests. Refresh the page or try again shortly.",
     backToHome: "Back to myfr.ai",
   },
   categoryExamples: {

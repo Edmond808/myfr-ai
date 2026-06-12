@@ -177,7 +177,9 @@ export function RivlyApp() {
       }
 
       try {
-        const res = await fetch(`/api/jobs?jobId=${jobParam}`);
+        const res = await fetch(`/api/jobs?jobId=${jobParam}`, {
+          credentials: "same-origin",
+        });
         if (!res.ok) return;
 
         const data = (await res.json()) as {
@@ -334,7 +336,9 @@ export function RivlyApp() {
           filter: `job_id=eq.${id}`,
         },
         async () => {
-          const res = await fetch(`/api/jobs?jobId=${id}`);
+          const res = await fetch(`/api/jobs?jobId=${id}`, {
+            credentials: "same-origin",
+          });
           if (!res.ok) return;
           const data = (await res.json()) as { quotes: ApiQuote[] };
 
@@ -355,7 +359,11 @@ export function RivlyApp() {
     channelCleanup.current = null;
     setError(null);
     setPendingRequest(req);
-    setJob({ ...req.classification, category: normalizeJobCategory(req.classification.category) });
+    setJob({
+      ...req.classification,
+      category: normalizeJobCategory(req.classification.category),
+      source: "demo",
+    });
     setQuotes([]);
     setAccepted(null);
     setJobId(null);
@@ -389,7 +397,9 @@ export function RivlyApp() {
 
         channelCleanup.current?.();
         channelCleanup.current = subscribeToQuotes(id) ?? null;
-        const res = await fetch(`/api/jobs?jobId=${id}`);
+        const res = await fetch(`/api/jobs?jobId=${id}`, {
+          credentials: "same-origin",
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.quotes?.length) {
@@ -405,8 +415,20 @@ export function RivlyApp() {
           setPendingRequest(null);
           return;
         }
-        // Real dispatch unavailable (RLS, schema, auth mismatch) — demo quotes still work.
-        runDemoDispatch(req);
+        if (err instanceof ApiClientError && err.status === 401) {
+          setError(t.dispatch.waitingAuth);
+          setView("home");
+          setJob(null);
+          setJobId(null);
+          setPendingRequest(null);
+          return;
+        }
+        // Logged-in users never get fake demo quotes — show an honest error.
+        setError(t.home.dispatchError);
+        setView("home");
+        setJob(null);
+        setJobId(null);
+        setPendingRequest(null);
       }
     } else {
       setView("dispatch");
@@ -567,6 +589,7 @@ export function RivlyApp() {
             showAuthBanner={
               isAnonymousSession && quotes.some((q) => q.price > 0)
             }
+            isPreviewMode={isAnonymousSession}
             onAuthRegister={() => savePendingAndNavigate("/auth/register")}
             onAuthSignIn={() => savePendingAndNavigate("/auth/login")}
             loyaltyTier={loyaltyTier}

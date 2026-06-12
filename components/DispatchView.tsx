@@ -35,6 +35,7 @@ interface DispatchViewProps {
   onAuthSignIn?: () => void;
   loyaltyTier?: LoyaltyTier;
   isLoggedIn?: boolean;
+  isPreviewMode?: boolean;
   completedBookings?: number;
 }
 
@@ -52,6 +53,7 @@ export function DispatchView({
   onAuthSignIn,
   loyaltyTier = 1,
   isLoggedIn = false,
+  isPreviewMode = false,
   completedBookings = 0,
 }: DispatchViewProps) {
   const { t } = useLocale();
@@ -151,7 +153,7 @@ export function DispatchView({
             {t.dispatch.aiEstimate}: ~€{job.budget_estimate_eur}
           </p>
         )}
-        {job.source === "demo" && (
+        {(job.source === "demo" || isPreviewMode) && (
           <p
             className="mt-2 text-xs inline-block px-2 py-0.5 rounded"
             style={{ background: PALETTE.azureSoft, color: PALETTE.navy }}

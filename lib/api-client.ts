@@ -35,6 +35,7 @@ export async function dispatchJobClient(payload: {
   const response = await fetch("/api/jobs", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
     body: JSON.stringify(payload),
   });
 
@@ -66,6 +67,7 @@ export async function acceptQuoteClient(payload: {
   const response = await fetch("/api/jobs", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
     body: JSON.stringify(payload),
   });
 

@@ -18,7 +18,7 @@ export default async function CustomerRequestsPage() {
     return <AccountAuthGate />;
   }
 
-  const { data: rows } = await supabase
+  const { data: rows, error } = await supabase
     .from("jobs")
     .select(
       `
@@ -34,6 +34,10 @@ export default async function CustomerRequestsPage() {
     .eq("customer_id", user.id)
     .order("created_at", { ascending: false })
     .limit(50);
+
+  if (error) {
+    return <CustomerRequestsView jobs={[]} loadError={error.message} />;
+  }
 
   const jobs: CustomerJobListItem[] = (rows ?? []).map((row) => {
     const quotes = (row.quotes ?? []) as { id: string; status: string }[];

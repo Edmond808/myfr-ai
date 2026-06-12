@@ -212,6 +212,7 @@ export const messages: Messages = {
     statusDisputed: "Litige",
     statusCancelled: "Annulée",
     loginRequired: "Connectez-vous pour voir vos demandes.",
+    loadError: "Impossible de charger vos demandes. Actualisez la page ou réessayez.",
     backToHome: "Retour à myfr.ai",
   },
   categoryExamples: {

@@ -11,11 +11,21 @@
 
 Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claude may also use local `/Users/e808m/myfr.ai`). Before starting work: `git fetch origin && git pull origin main`. After pushing a branch, append a line here. Full loop: `docs/TEAM_WORKFLOW.md`.
 
-**Current sync:** main @ `c5123a4` (PR #11 merged) — `cursor/mobile-app` @ `d15efbf` has dispatch RLS fixes + mobile setup **not yet on main**. Claude: pull `cursor/mobile-app` or wait for PR #12 merge.
+**Current sync:** main — dispatch RLS fix (migration `008`) applied to Supabase `kivwsfwijgbwflvsrtqy`; logged-in dispatch no longer falls back to demo quotes.
 
 ---
 
 ## 🚨 URGENT — Claude review (2026-06-12)
+
+**Status: FIXED on main** — migration `008_fix_jobs_quotes_rls_recursion.sql` applied to live Supabase; demo fallback removed for logged-in users.
+
+**Root cause:** jobs ↔ quotes RLS policies referenced each other → `infinite recursion detected in policy for relation "jobs"`. Jobs were created in DB but invisible to customers; API failures triggered fake demo quotes.
+
+**Retest:** login as edmond199906@gmail.com → submit grocery request in Cannes → see real pro "EM" (treg) in dispatch → check `/account/requests` → pro treg92093@gmail.com sees job in `/pro/dashboard`.
+
+---
+
+## 🚨 URGENT — Claude review (2026-06-12) [archive]
 
 **Read first:** `docs/REVIEW_QUEUE.md` (this section) → `app/api/jobs/route.ts` → `lib/dispatch-job-fallback.ts` → `components/RivlyApp.tsx` → `schema.sql` (RLS helpers + `dispatch_job`).
 
@@ -90,7 +100,9 @@ Actual:   Dispatch fails or demo fallback; pro feed empty
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [cursor/mobile-app / PR #12](https://github.com/Edmond808/myfr-ai/pull/12) — Dispatch RLS recursion workaround (admin persist + inline dispatch + demo fallback). **Still broken:** logged-in live dispatch until migration `008_fix_jobs_quotes_rls_recursion` applied in Supabase (+ `SUPABASE_SERVICE_ROLE_KEY` for admin path). Commits `91479ee`, `d15efbf`. Claude: review `lib/dispatch-job-fallback.ts`, `app/api/jobs/route.ts`, add migration 008 file if missing, test logged-in flow.
+- [2026-06-12] [CURSOR] [main] — **FIXED:** Dispatch RLS recursion — migration `008` created + applied to Supabase; removed logged-in demo fallback; preview banner for anonymous. Verified: `node scripts/check-supabase.mjs` all green; 2 existing jobs + EM merchant quotes visible after fix.
+
+- [2026-06-12] [CURSOR] [cursor/mobile-app / PR #12](https://github.com/Edmond808/myfr-ai/pull/12) — Dispatch RLS recursion workaround merged via PR #12; migration `008` now applied live. Demo fallback removed for authenticated web users.
 
 - [2026-06-12] [CURSOR] [PR #11 / cursor/mobile-app] — **Merge-ready (CI green).** Expo mobile app + Bearer API auth + dispatch fallback + migration `006`. Babysat: excluded `mobile/` from root tsconfig (CI typecheck fix). No review comments yet. Claude: test `cd mobile && npx expo start` against local API; run migration `006` if dispatch RPC fails. **Verified locally:** `mobile/` `npm run typecheck` pass, `npx expo-doctor` 21/21; Expo SDK 56, tab nav (Home / Requests / Pro / Account), dispatch stack, auth screens. iPhone Simulator: `npx expo start` → press `i`.
 
