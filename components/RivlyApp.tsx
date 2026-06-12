@@ -6,7 +6,6 @@ import { classifyRequestClient, dispatchJobClient } from "@/lib/api-client";
 import {
   BASE_PRICE,
   DEMO_MERCHANTS,
-  PALETTE,
 } from "@/lib/constants";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
@@ -303,15 +302,7 @@ export function RivlyApp() {
   };
 
   return (
-    <div
-      className="relative"
-      style={{
-        minHeight: "100vh",
-        background: PALETTE.bg,
-        color: PALETTE.navy,
-        fontFamily: "var(--font-inter), -apple-system, 'Segoe UI', sans-serif",
-      }}
-    >
+    <div className="rivly-shell relative">
       <AmbientBackground />
 
       <div className="relative z-10">

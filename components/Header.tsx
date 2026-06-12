@@ -15,7 +15,7 @@ export function Header({ onReset, userEmail, onLogout }: HeaderProps) {
   const { t } = useLocale();
 
   return (
-    <header className="glass-rivly sticky top-0 z-40 flex items-center justify-between gap-4 px-6 py-5 max-w-5xl mx-auto flex-wrap border-b border-white/40">
+    <header className="glass-rivly-strong sticky top-0 z-40 flex items-center justify-between gap-4 px-6 py-5 max-w-5xl mx-auto flex-wrap border-b border-white/50">
       <button
         onClick={onReset}
         className="flex items-center gap-2"

@@ -10,7 +10,7 @@
   1. **Quote acceptance not persisted** — `RivlyApp.tsx` `onAccept={setAccepted}` only updates local React state; no API call to update `quotes.status` / job in Supabase.
   2. **Demo quotes after real dispatch** — `simulateDemoQuotes()` still runs when `dispatched === 0`, Supabase fetch fails, or env missing; users can see fake merchant names alongside/instead of live quotes. Fix before or alongside design merge.
 
-- [2026-06-12] [CURSOR] [design/alive-v1] — Glassmorphic/motion redesign (CSS-only, no new deps): ambient sea-light blobs, glass cards, staggered reveals, micro-interactions. Patch file was not in Downloads; changes recreated from Claude handoff. Needs: visual review + merge after blocker triage.
+- [2026-06-12] [CURSOR] [design/alive-v1] — **Alive v1 amplified** (after visual QA): richer Mediterranean gradient shell, 4 saturated ambient blobs + vignette, stronger glass blur, gradient hero title (72px), glass-rivly-strong on header/input. Original 53c341f was present but too subtle (flat #F1F7FA overlay, 45% blob opacity, 72% white glass). Needs: visual sign-off on localhost:3000.
 
 ## Claude reviews
 

@@ -39,28 +39,21 @@ export function HomeView({
   };
 
   return (
-    <main className="max-w-3xl mx-auto px-6 pt-10 pb-20">
-      <h1
-        className="reveal"
-        style={{
-          fontFamily: "var(--font-fraunces), serif",
-          fontSize: "clamp(34px, 6vw, 56px)",
-          lineHeight: 1.08,
-          fontWeight: 500,
-        }}
-      >
+    <main className="relative max-w-3xl mx-auto px-6 pt-14 pb-20">
+      <div className="hero-glow" aria-hidden="true" />
+      <h1 className="hero-title reveal">
         {t.home.title1}
         <br />
         <span className="title-accent">{t.home.title2}</span>
       </h1>
       <p
-        className="reveal reveal-d1 mt-4 text-lg"
-        style={{ color: "#3D6075", maxWidth: 520 }}
+        className="reveal reveal-d1 mt-5 text-xl"
+        style={{ color: "#2a5068", maxWidth: 540, lineHeight: 1.55 }}
       >
         {t.home.subtitle}
       </p>
 
-      <div className="reveal reveal-d2 glass-rivly mt-8 rounded-2xl p-2">
+      <div className="reveal reveal-d2 glass-rivly-strong mt-10 rounded-2xl p-2">
         <textarea
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
