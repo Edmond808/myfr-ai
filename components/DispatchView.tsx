@@ -2,12 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, BadgeCheck, Check, Clock, MapPin, Sparkles } from "lucide-react";
-import {
-  BRAND,
-  CATEGORY_ICONS,
-  COMMISSION,
-  PALETTE,
-} from "@/lib/constants";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
+import { BRAND, COMMISSION, PALETTE } from "@/lib/constants";
 import { logQuoteFiltersClient } from "@/lib/api-client";
 import { payPrice } from "@/lib/loyalty";
 import { useLocale } from "@/lib/i18n/LocaleProvider";

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { CATEGORY_ICONS, PALETTE } from "@/lib/constants";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
+import { PALETTE } from "@/lib/constants";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MerchantJobFeedItem, MerchantRecord } from "@/lib/types";
 import { ProLayout } from "./ProLayout";

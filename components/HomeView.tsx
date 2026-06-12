@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { ChevronRight, MapPin } from "lucide-react";
 import VoiceInput from "@/components/VoiceInput";
-import { CATEGORY_ICONS, LOCATIONS, PALETTE } from "@/lib/constants";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
+import { LOCATIONS, PALETTE } from "@/lib/constants";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { Category } from "@/lib/types";
 

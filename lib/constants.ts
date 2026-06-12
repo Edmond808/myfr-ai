@@ -1,14 +1,3 @@
-import {
-  Anchor,
-  CalendarHeart,
-  Car,
-  ConciergeBell,
-  Hammer,
-  Home,
-  ShoppingBasket,
-  Sparkles,
-  type LucideIcon,
-} from "lucide-react";
 import type { Category, Merchant } from "./types";
 
 export const BRAND = "myfr.ai";
@@ -34,17 +23,6 @@ export const LOCATIONS = [
   "Saint-Tropez",
   "Menton",
 ] as const;
-
-export const CATEGORY_ICONS: Record<Category, LucideIcon> = {
-  groceries: ShoppingBasket,
-  housekeeping: Sparkles,
-  rentals: Home,
-  transport: Car,
-  boats: Anchor,
-  handyman: Hammer,
-  events: CalendarHeart,
-  concierge: ConciergeBell,
-};
 
 /** Demo merchants — 6–8 per category; with Supabase, dispatch returns all verified pros */
 export const DEMO_MERCHANTS: Record<Category, Merchant[]> = {
