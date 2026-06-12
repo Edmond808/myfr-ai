@@ -15,7 +15,7 @@ Both clones share one repo (`origin` → GitHub `Edmond808/myfr-ai`; rivly-claud
 
 ## Open items
 
-- [2026-06-12] [CURSOR] [PR #11 / cursor/mobile-app] — **Merge-ready (CI green).** Expo mobile app + Bearer API auth + dispatch fallback + migration `006`. Babysat: excluded `mobile/` from root tsconfig (CI typecheck fix). No review comments yet. Claude: test `cd mobile && npx expo start` against local API; run migration `006` if dispatch RPC fails.
+- [2026-06-12] [CURSOR] [PR #11 / cursor/mobile-app] — **Merge-ready (CI green).** Expo mobile app + Bearer API auth + dispatch fallback + migration `006`. Babysat: excluded `mobile/` from root tsconfig (CI typecheck fix). No review comments yet. Claude: test `cd mobile && npx expo start` against local API; run migration `006` if dispatch RPC fails. **Verified locally:** `mobile/` `npm run typecheck` pass, `npx expo-doctor` 21/21; Expo SDK 56, tab nav (Home / Requests / Pro / Account), dispatch stack, auth screens. iPhone Simulator: `npx expo start` → press `i`.
 
 - [2026-06-12] [CURSOR] [cursor/mobile-app] — **Pro merchant audit:** `docs/audits/pro-merchant-audit-2026-06-12.md`. Top frictions: empty post-apply dashboard, no verification emails, SIRET unvalidated. P0: merchant_job_feed RLS + dispatch_job auth.
 
