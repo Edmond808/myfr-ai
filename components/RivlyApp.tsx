@@ -375,7 +375,11 @@ export function RivlyApp() {
           }
         }
       } catch {
-        simulateDemoQuotes(req.classification);
+        setError(t.home.dispatchError);
+        setView("home");
+        setJob(null);
+        setJobId(null);
+        setPendingRequest(null);
       }
     } else {
       simulateDemoQuotes(req.classification);
