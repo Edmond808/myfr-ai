@@ -2,6 +2,16 @@
 
 Everything else is already done (PR merged, Expo project linked, EAS secrets set).
 
+## SDK 56 vs App Store Expo Go (read this first)
+
+This project uses **Expo SDK 56**. The **Expo Go app from the App Store** on a real iPhone only supports up to **SDK 54** right now (Apple has not approved newer Expo Go builds yet).
+
+**Updating Expo Go from the App Store will not fix this.** The store version is simply too old for SDK 56.
+
+**Works today:** press **`i`** in the Expo terminal to open the **iPhone Simulator** (requires Xcode). Do not scan the QR on a physical iPhone until Expo publishes SDK 56 to the App Store or you use an EAS dev build.
+
+---
+
 ## Step 1 — Run setup (once)
 
 From the project folder:
@@ -20,16 +30,16 @@ This copies Supabase keys from `.env.local` → `mobile/.env`, installs deps, an
 
 Leave this running.
 
-## Step 3 — Start Expo and scan QR
+## Step 3 — Start Expo
 
 ```bash
 cd mobile && npx expo start
 ```
 
-- **iPhone:** Install [Expo Go](https://expo.dev/go) → open Camera → scan the QR in the terminal.
-- **Mac simulator:** Press `i` in the Expo terminal (needs Xcode).
+- **Mac simulator (recommended):** Press `i` in the Expo terminal (needs Xcode).
+- **Physical iPhone:** Not supported with App Store Expo Go + SDK 56 — use simulator or EAS build.
 
-Phone and Mac must be on the **same Wi‑Fi**.
+Phone and Mac must be on the **same Wi‑Fi** if you later use a compatible Expo Go build.
 
 ---
 
@@ -60,8 +70,9 @@ There is no reliable CLI for the base-directory field — those four clicks are 
 
 | Problem | Fix |
 |---------|-----|
+| “Incompatible with this version” on phone | Press **`i`** for Simulator — don’t scan QR on a real iPhone |
 | “Classification failed” | Is `./scripts/dev.sh` running? |
 | Works on simulator, not phone | Re-run setup script (refreshes LAN IP in `mobile/.env`) |
 | 401 on dispatch | Sign in on the Account tab first |
 
-More detail: `mobile/README.md`
+More detail: [mobile/README.md](../mobile/README.md)
